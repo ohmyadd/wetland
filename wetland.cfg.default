@@ -1,0 +1,64 @@
+[wetland]
+# IP addresses to listen for incoming SSH connections.
+wetland_addr = 0.0.0.0
+wetland_port = 22
+
+# IP address to send outgoing SSH connections.
+docker_addr = 172.18.0.2
+docker_port = 22
+
+# Name of this sensor, used when logging or outputing
+name = Wetland HoneyPot 1
+
+# Path ot geoio dataabse
+geoipdb = GeoLiteCity.dat
+
+
+[ssh]
+# Generate wth `ssh-keygen -t rsa`
+public_rsa = keys/id_rsa.pub
+private_rsa = keys/id_rsa
+
+# Generate with `ssh-keygen -t dsa`
+public_dsa = keys/id_dsa.pub
+private_dsa = keys/id_dsa # Banner of wetland server
+# It should be same as with banner of sshd docker
+banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
+
+[log]
+# The folder to store logs 
+paramiko = ./log
+wetland = ./log
+
+[files]
+# The folder to store the files uploaded by hackers.
+sftp = download/sftp
+
+[output]
+# Ways to report to you when wetland visited by hackers.
+bearychat = true
+email = false
+
+[bearychat]
+
+# Urls of bearychat incoming robots
+# Each of them should be start with url, e.g. url1 url2
+url1 = https://hook.bearychat.com/xxxx
+
+# level in [info, warning, urgent]
+# wetland will report this level and more important levels message to you
+level = info
+
+[email]
+#user, pwd, host, port of your smtp server
+user = example@163.com
+pwd = example
+host = smtp.163.com
+port = 25
+
+# Wetland can send message to mutli emails
+# It should start with 'to', e.g. to1 to2 to3
+to1 = example@qq.com
+
+# Same with level in bearychat
+level = warning
