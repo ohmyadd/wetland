@@ -19,6 +19,8 @@ def reverse_handler2(docker_channel, origin, destination, hacker_trans,
         return
 
     reverse_logger.info("N"*20)
+    wd_logger.info("reverse tcpip request origin:%s dest:%s" % (
+                   origin, destination))
 
     try:
         while True:

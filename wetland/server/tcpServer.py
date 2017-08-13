@@ -51,7 +51,7 @@ class tcp_handler(SocketServer.BaseRequestHandler):
             while True:
                 chann = transport.accept(60)
                 # no channel left
-                if chann is None and not transport.channels_seen:
+                if not transport._channels.values():
                     break
         except Exception as e:
             print e

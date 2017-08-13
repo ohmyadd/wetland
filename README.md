@@ -41,6 +41,8 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
 5. Configure the banner of ssh server
   * Edit banner in wetland.cfg
   * It should be same with that in sshd contaniner
+6. Install python requirements
+  * run `pip install -r requirements`
 
 ## Running
 1. Run
