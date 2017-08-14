@@ -25,10 +25,6 @@ private_dsa = keys/id_dsa # Banner of wetland server
 # It should be same as with banner of sshd docker
 banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
 
-[log]
-# The folder to store logs 
-paramiko = ./log
-wetland = ./log
 
 [files]
 # The folder to store the files uploaded by hackers.
@@ -36,11 +32,16 @@ sftp = download/sftp
 
 [output]
 # Ways to report to you when wetland visited by hackers.
-bearychat = true
+log = true
 email = false
+bearychat = true
+
+[log]
+# The folder to store logs 
+paramiko = ./log
+wetland = ./log
 
 [bearychat]
-
 # Urls of bearychat incoming robots
 # Each of them should be start with url, e.g. url1 url2
 url1 = https://hook.bearychat.com/xxxx

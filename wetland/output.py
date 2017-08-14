@@ -15,7 +15,10 @@ def sub(level='warning', **kargs):
     for p in plugins:
         getattr(p, level)(**kargs)
 
-def output(**kargs):
+def output1(**kargs):
     thread = threading.Thread(target=sub, kwargs=kargs)
     thread.setDaemon(True)
     thread.start()
+
+def output(kind, subject, action, content):
+    print kind, subject, action, content
