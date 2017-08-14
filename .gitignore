@@ -1,6 +1,6 @@
 .DS_Store
 log/
-key/
+keys/
 download/
 wetland.cfg
 GeoLiteCity.dat
