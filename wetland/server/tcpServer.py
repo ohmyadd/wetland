@@ -1,5 +1,5 @@
-import sys
 import paramiko
+
 from wetland.services import SocketServer
 from wetland.server import sshServer
 from wetland.server import sftpServer
@@ -49,7 +49,7 @@ class tcp_handler(SocketServer.BaseRequestHandler):
 
         try:
             while True:
-                chann = transport.accept(60)
+                transport.accept(60)
                 # no channel left
                 if not transport._channels.values():
                     break

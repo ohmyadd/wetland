@@ -1,46 +1,37 @@
 import json
-import time
 import requests
 from wetland import config
 
 
+# sensor name
+name = config.cfg.get("wetland", "name")
+
+# urls to report
+urls = [v for k, v in config.cfg.items("bearychat") if k.startswith("url")]
+
+
 class plugin(object):
-    def __init__(self):
-        self.cfg = config.cfg
+    def __init__(self, hacker_ip):
+        self.hacker_ip = hacker_ip
 
-        self.urls = []
-        for k,v in self.cfg.items("bearychat"):
-            if k.startswith("url"):
-                self.urls.append(v)
-        self.heng = '**' + '='*22 + '**'
-        self.name = self.cfg.get("wetland", "name")
+    def send(self, subject, action, content):
+        if subject != 'wetland':
+            return False
+        if action in ['env_request', 'pty_request', 'global_request',
+                      'channel_request']:
+            return False
 
-        d = {'info':1, 'warning':2, 'urgent':3}
-        self.level = d.get(self.cfg.get('bearychat', 'level'), 2)
+        text = []
+        text.append('Sensor:\t%s' % name)
+        text.append('Hacker:\t%s' % self.hacker_ip)
+        text.append('Action:\t%s' % action)
+        text.append('Content:\t%s' % content)
 
-    def send(self, level, **kargs):
-        if level < self.level:
-            return
+        body = {'text': '\n'.join(text), 'markdown': True}
+        headers = {"Content-Type": "application/json"}
+        data = json.dumps(body)
 
-        text = '\n'.join([self.heng, self.name, self.heng])
-        body = {'text':text, 'markdown':True, 'attachments':[]}
+        for url in urls:
+            requests.post(url, headers=headers, data=data)
 
-        d = {1:'Info', 2:'Warning', 3:'Urgent'}
-        body['attachments'].append({'title':'Level', 'text':d[level]})
-
-        for k, v in kargs.items():
-            tmp = {'title':k, 'text':v}
-            body['attachments'].append(tmp)
-
-        for url in self.urls:
-            requests.post(url, headers={"Content-Type":"application/json"},
-                          data=json.dumps(body))
-
-    def info(self, **kargs):
-        self.send(level=1, **kargs)
-
-    def warning(self, **kargs):
-        self.send(level=2, **kargs)
-
-    def urgent(self, **kargs):
-        self.send(level=3, **kargs)
+        return True

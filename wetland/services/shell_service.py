@@ -1,21 +1,18 @@
-import traceback
-
-
-def shell_service(hacker_session, docker_session, shell_logger, wd_logger):
+def shell_service(hacker_session, docker_session, output):
 
     hacker_session.settimeout(3600)
-    shell_logger.info("N"*20)
+    output.o('content', 'shell', "N"*20)
 
     try:
         while True:
             if hacker_session.recv_ready():
                 text = hacker_session.recv(1)
                 docker_session.sendall(text)
-                shell_logger.info('[H]:'+text.encode("hex"))
+                output.o('content', 'shell', '[H]:'+text.encode("hex"))
 
             if docker_session.recv_ready():
                 text = docker_session.recv(1024)
-                shell_logger.info('[V]:'+text.encode("hex"))
+                output.o('content', 'shell', '[V]:'+text.encode("hex"))
                 hacker_session.sendall(text)
 
             if docker_session.recv_stderr_ready():
@@ -32,7 +29,6 @@ def shell_service(hacker_session, docker_session, shell_logger, wd_logger):
 
     except Exception, e:
         print e
-        traceback.print_exc()
     finally:
         hacker_session.close()
         docker_session.close()

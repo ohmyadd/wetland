@@ -1,41 +1,45 @@
 import os
-import logging
+import time
+import paramiko
 from wetland import config
 
+# path of log files
+logpath = config.cfg.get("log", "path")
+if not os.path.exists(logpath):
+    os.makedirs(logpath)
 
-class loggers():
-    def __init__(self):
-        self.cfg = config.cfg
-        self.logpath = self.cfg.get("log", "wetland")
+paramiko.util.log_to_file(logpath + '/paramiko.log')
+
+# sensor name
+name = config.cfg.get("wetland", "name")
+
+
+class plugin(object):
+    def __init__(self, hacker_ip):
+        self.hacker_ip = hacker_ip
+        self.logpath = None
+        self.get_logpath()
+
+    def get_logpath(self):
+        self.logpath = os.path.join(logpath, self.hacker_ip)
         if not os.path.exists(self.logpath):
             os.makedirs(self.logpath)
 
-    def get(self, kind, src_ip):
-        if kind not in ['pwd', 'shell', 'exec', 'direct', 'reverse', 'sftp']:
-            return None
+    def send(self, subject, action, content):
+        if subject == 'wetland':
+            with open(os.path.join(self.logpath, 'wetland.log'), 'a') as logfile:
+                log = ' '.join([time.strftime("%y%m%d-%H:%M:%S"),
+                               action, content, '\n'])
+                logfile.write(log)
 
-        logger = logging.getLogger(':'.join((kind, src_ip)))
-        logger.setLevel(logging.INFO)
-        if logger.handlers:
-            return logger
+        elif subject == 'content':
+            with open(os.path.join(self.logpath, action+'.log'), 'a') as logfile:
+                log = ' '.join([time.strftime("%y%m%d-%H:%M:%S"),
+                                content, '\n'])
+                logfile.write(log)
 
-        filename = os.path.join(self.logpath, src_ip, kind+'.log')
-        filepath = os.path.dirname(filename)
-        if not os.path.exists(filepath):
-            os.makedirs(filepath)
-
-        handler = logging.FileHandler(filename=filename)
-        formatter = logging.Formatter('%(asctime)s  %(message)s')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-
-        return logger
-
-    def get2(self, name):
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.INFO)
-        hd = logging.FileHandler(os.path.join(self.logpath, 'wetland.log'))
-        ft = logging.Formatter('%(asctime)s %(filename)s %(module)s %(message)s')
-        hd.setFormatter(ft)
-        logger.addHandler(hd)
-        return logger
+        elif subject in ['sftpfile', 'sftpserver']:
+            with open(os.path.join(self.logpath, 'sftp.log'), 'a') as logfile:
+                log = ' '.join([time.strftime("%y%m%d-%H:%M:%S"),
+                               action, content, '\n'])
+                logfile.write(log)

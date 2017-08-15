@@ -1,53 +1,37 @@
-import time
 import yagmail
 from wetland import config
 
+# sensor name
+name = config.cfg.get("wetland", "name")
+
+# smtp
+user = config.cfg.get("email", "user")
+pwd = config.cfg.get("email", "pwd")
+host = config.cfg.get("email", "host")
+port = config.cfg.getint("email", "port")
+
+# receviers
+tos = [v for k, v in config.cfg.items("email") if k.startswith("to")]
+
 
 class plugin(object):
-    def __init__(self):
-        self.cfg = config.cfg
+    def __init__(self, hacker_ip):
+        self.hacker_ip = hacker_ip
 
-        self.user = self.cfg.get("email", "user")
-        self.pwd = self.cfg.get("email", "pwd")
-        self.host = self.cfg.get("email", "host")
-        self.port = self.cfg.getint("email", "port")
+    def send(self, subject, action, content):
+        if subject != 'wetland':
+            return False
 
-        self.tos = []
-        for k,v in self.cfg.items("email"):
-            if k.startswith("to"):
-                self.tos.append(v)
+        subject = "Wetland %s Honeypot" % name
 
-        self.name = self.cfg.get("wetland", "name")
-        d = {'info':1, 'warning':2, 'urgent':3}
-        self.level = d.get(self.cfg.get('email', 'level'), 2)
-
-    def send(self, level, **kargs):
-        if level < self.level:
-            return
-
-        subject = "Wetland %s Honeypot Notice" % self.name
-
-        d = {1:'Info', 2:'warning', 3:'Urgent'}
-        texts = []
-        texts.append("Level:  %s" % d[self.level])
-
-        for k, v in kargs.items():
-            texts.append("%s: %s" % (k, v))
-        text = '\n'.join(texts)
-
+        text = []
+        text.append('Sensor:\t%s' % name)
+        text.append('Hacker:\t%s' % self.hacker_ip)
+        text.append('Action:\t%s' % action)
+        text.append('Content:\t%s' % content)
 
         for to in self.tos:
             print self.user, self.pwd, self.host, self.port
             client = yagmail.SMTP(user=self.user, password=self.pwd,
                                   host=self.host, port=self.port)
-            print 'in'
-            client.send(to=to, subject=subject, contents=text)
-
-    def info(self, **kargs):
-        self.send(level=1, **kargs)
-
-    def warning(self, **kargs):
-        self.send(level=2, **kargs)
-
-    def urgent(self, **kargs):
-        self.send(level=3, **kargs)
+            client.send(to=to, subject=subject, contents='\n'.join(text))

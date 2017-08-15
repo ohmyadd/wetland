@@ -1,6 +1,5 @@
 import select
 import threading
-import traceback
 
 
 def reverse_handler(*args):
@@ -10,7 +9,7 @@ def reverse_handler(*args):
 
 
 def reverse_handler2(docker_channel, origin, destination, hacker_trans,
-                    reverse_logger, wd_logger):
+                     output):
     try:
         hacker_channel = hacker_trans.open_forwarded_tcpip_channel(origin,
                                                                destination)
@@ -18,29 +17,27 @@ def reverse_handler2(docker_channel, origin, destination, hacker_trans,
         docker_channel.close()
         return
 
-    reverse_logger.info("N"*20)
-    wd_logger.info("reverse tcpip request origin:%s dest:%s" % (
-                   origin, destination))
+    output.o('content', 'reverse', "N"*20)
 
     try:
         while True:
             r, w, x = select.select([hacker_channel, docker_channel], [], [])
             if hacker_channel in r:
                 text = hacker_channel.recv(1024)
-                reverse_logger.info('[H]:'+text.encode("hex"))
+                output.o('content', 'reverse', '[H]:'+text.encode("hex"))
                 if len(text) == 0:
                     break
                 docker_channel.send(text)
 
             if docker_channel in r:
                 text = docker_channel.recv(1024)
-                reverse_logger.info('[V]:'+text.encode("hex"))
+                output.o('content', 'reverse', '[V]:'+text.encode("hex"))
                 if len(text) == 0:
                     break
                 hacker_channel.send(text)
 
-    except:
-        traceback.print_exc()
+    except Exception as e:
+        print e
     finally:
         hacker_channel.close()
         docker_channel.close()

@@ -2,6 +2,7 @@ import threading
 from wetland import config
 from importlib import import_module as impt
 
+
 def get_plugins():
     pname = []
     for k, v in config.cfg.items('output'):
@@ -9,16 +10,18 @@ def get_plugins():
             pname.append(k)
     return pname
 
-plugins = [impt('wetland.output.'+n).plugin() for n in get_plugins()]
 
-def sub(level='warning', **kargs):
-    for p in plugins:
-        getattr(p, level)(**kargs)
+pname = get_plugins()
 
-def output1(**kargs):
-    thread = threading.Thread(target=sub, kwargs=kargs)
-    thread.setDaemon(True)
-    thread.start()
 
-def output(kind, subject, action, content):
-    print kind, subject, action, content
+class output(object):
+    def __init__(self, hacker_ip):
+        self.hacker_ip = hacker_ip
+        self.plugins = [impt('wetland.output_plugin.'+n).plugin(self.hacker_ip)
+                        for n in pname]
+
+    def o(self, *args):
+        for p in self.plugins:
+            thread = threading.Thread(target=p.send, args=args)
+            thread.setDaemon(True)
+            thread.start()
