@@ -6,9 +6,11 @@ automate create sshd docker
 create log download keys automatic
 add watchdog
 
-rewrite output system
-split shell command
+
 add p0f
 take use of bearychat incoming outgoing
-report more behaviour
 distribute log system
+
+done rewrite output system
+done split shell command
+done report more behaviour
