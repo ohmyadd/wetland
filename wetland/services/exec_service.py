@@ -3,6 +3,7 @@ def exec_service(hacker_session, docker_session, cmd, output):
     docker_session.exec_command(cmd)
     output.o('content', 'exec', "N"*20)
     output.o('content', 'exec', '[H]:'+cmd.encode("hex"))
+    output.o('wetland', 'exec command', cmd)
 
     try:
         while True:
