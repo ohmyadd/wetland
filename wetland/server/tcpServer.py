@@ -49,7 +49,7 @@ class tcp_handler(SocketServer.BaseRequestHandler):
 
         try:
             while True:
-                transport.accept(60)
+                chann = transport.accept(60)
                 # no channel left
                 if not transport._channels.values():
                     break
