@@ -1,6 +1,8 @@
+import os
 import json
-with open("visual.txt") as txt:
-    visual = json.loads(txt)
+
+with open(os.path.join(os.path.dirname(__file__), 'visual.txt')) as txt:
+    visual = json.load(txt)
 
 def shell_service(hacker_session, docker_session, output):
 
