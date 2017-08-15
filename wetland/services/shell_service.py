@@ -4,11 +4,17 @@ def shell_service(hacker_session, docker_session, output):
     output.o('content', 'shell', "N"*20)
 
     try:
+        command = []
         while True:
             if hacker_session.recv_ready():
                 text = hacker_session.recv(1)
                 docker_session.sendall(text)
                 output.o('content', 'shell', '[H]:'+text.encode("hex"))
+                if text == '\r':
+                    output.o('wetland', 'command', ''.join(command))
+                    command = []
+                else:
+                    command.append(text)
 
             if docker_session.recv_ready():
                 text = docker_session.recv(1024)
