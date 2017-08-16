@@ -61,5 +61,11 @@ path = log
 
 
 [p0fp0f]
+# Path to p0f folder
 path = p0f
+
+# iface to sniff to sniff
+iface = eth0
+
+# sock name of p0f api
 sockname = wetland
