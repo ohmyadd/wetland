@@ -20,9 +20,13 @@ class plugin(object):
 
     def send(self, subject, action, content):
         # log one time per transport
-        if sent:
+        if self.sent:
             return
 
         with open(os.path.join(logpath, self.hacker_ip, 'p0f.log'), 'a') as lg:
-            lg.write(str(client.get_info(self.hacker_ip)) + '\n')
-        self.sent = True
+            try:
+                lg.write(str(client.get_info(self.hacker_ip)) + '\n')
+            except KeyError:
+                pass
+            else:
+                self.sent = True
