@@ -4,9 +4,9 @@ wetland dockerize
 create sshd docker image realistic
 automate create sshd docker
 create log download keys automatic
+
+
 add watchdog
-
-
 add p0f
 take use of bearychat incoming outgoing
 distribute log system

@@ -1,9 +1,11 @@
 .DS_Store
+
 log/
 keys/
+p0f/
 download/
+
 wetland.cfg
-GeoLiteCity.dat
 
 paramiko/*.pyc
 wetland/*.pyc
