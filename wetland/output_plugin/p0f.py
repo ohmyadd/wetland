@@ -8,7 +8,7 @@ sock = config.cfg.get("p0f", "sockname")
 path = config.cfg.get("p0f", "path")
 logpath = config.cfg.get("log", "path")
 
-subprocess.Popen("./p0f -d -s {sock}", shell=True, cwd=path, stdout=None)
+subprocess.Popen("./p0f -d -s %s" % sock, shell=True, cwd=path, stdout=None)
 
 client = p0f.P0f(os.path.join(path, sock))
 
