@@ -1,14 +1,26 @@
+import os
+import json
+
+with open(os.path.join(os.path.dirname(__file__), 'visual.txt')) as txt:
+    visual = json.load(txt)
+
 def shell_service(hacker_session, docker_session, output):
 
     hacker_session.settimeout(3600)
     output.o('content', 'shell', "N"*20)
 
     try:
+        command = []
         while True:
             if hacker_session.recv_ready():
                 text = hacker_session.recv(1)
                 docker_session.sendall(text)
                 output.o('content', 'shell', '[H]:'+text.encode("hex"))
+                if text == '\r':
+                    output.o('wetland', 'shell command', ''.join(command))
+                    command = []
+                else:
+                    command.append(visual[text])
 
             if docker_session.recv_ready():
                 text = docker_session.recv(1024)

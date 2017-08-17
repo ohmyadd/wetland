@@ -43,6 +43,12 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
   * It should be same with that in sshd contaniner
 6. Install python requirements
   * run `pip install -r requirements`
+7. Install p0f if you want
+  * run `git clone https://github.com/p0f/p0f`
+  * run `cd p0f`
+  * run `./build.sh`
+  * Edit [p0fp0f] section in wetland.cfg
+  * if you dont need p0f, just disable p0f in [output] section
 
 ## Running
 1. Run

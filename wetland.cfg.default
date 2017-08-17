@@ -31,6 +31,7 @@ sftp = download/sftp
 [output]
 # Ways to report to you when wetland visited by hackers.
 # except log, others only report wetland log
+p0fp0f = true
 log = true
 email = false
 bearychat = true
@@ -57,3 +58,14 @@ to1 = example@qq.com
 [log]
 # The folder to store logs 
 path = log
+
+
+[p0fp0f]
+# Path to p0f folder
+path = p0f
+
+# iface to sniff to sniff
+iface = eth0
+
+# sock name of p0f api
+sockname = wetland

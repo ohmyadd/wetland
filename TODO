@@ -1,14 +1,15 @@
-honeypot diary
-
 wetland dockerize
 create sshd docker image realistic
 automate create sshd docker
-create log download keys automatic
-add watchdog
 
-rewrite output system
-split shell command
-add p0f
+
+add watchdog
 take use of bearychat incoming outgoing
-report more behaviour
 distribute log system
+
+doing honeypot diary
+
+done add p0f
+done rewrite output system
+done split shell command
+done report more behaviour
