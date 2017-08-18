@@ -5,7 +5,9 @@ automate create sshd docker
 
 add watchdog
 take use of bearychat incoming outgoing
-distribute log system
+distribute log system & support hpfeeds
+
+more information on forward request
 
 doing honeypot diary
 

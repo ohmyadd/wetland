@@ -80,7 +80,7 @@ class exec_player(object):
         with open(self.filename) as log_file:
             datas = []
             for i in log_file.xreadlines():
-                a = i.strip().split("  ")
+                a = i.strip().split(" ")
 
                 timestamp = a[0]
                 data = a[1]
@@ -221,7 +221,7 @@ class forward_player(object):
         with open(self.filename) as log_file:
             datas = []
             for i in log_file.xreadlines():
-                a = i.strip().split("  ")
+                a = i.strip().split(" ")
 
                 timestamp = a[0]
                 data = a[1]
