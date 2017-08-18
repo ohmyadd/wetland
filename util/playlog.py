@@ -1,7 +1,6 @@
 import os
 import re
 import sys
-import time
 import argparse
 from collections import deque
 
@@ -16,7 +15,7 @@ class shell_player(object):
         with open(self.filename) as log_file:
             datas = []
             for i in log_file.xreadlines():
-                a = i.strip().split("  ")
+                a = i.strip().split(" ")
 
                 timestamp = a[0]
                 data = a[1]
