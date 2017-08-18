@@ -27,7 +27,8 @@ class plugin(object):
         text.append('Action:\t%s' % action)
         text.append('Content:\t%s' % content)
 
-        body = {'text': '\n'.join(text), 'markdown': True}
+        body = {'text': '\n'.join(text), 'markdown': True,
+                'notification':'Wetland Honeypot Report'}
         headers = {"Content-Type": "application/json"}
         data = json.dumps(body)
 
