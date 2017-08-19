@@ -17,6 +17,7 @@ def reverse_handler2(docker_channel, origin, destination, hacker_trans,
         docker_channel.close()
         return
 
+    output.o('wetland', 'reverse', 'ori:%s, dest:%s' % (origin, destination))
     output.o('content', 'reverse', "N"*20)
 
     try:
