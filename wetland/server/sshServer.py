@@ -132,7 +132,8 @@ class ssh_server(paramiko.ServerInterface):
         flag = self.docker_trans.request_port_forward(address, port,
                                                       handler=handler)
         tmp = "success" if flag else 'failed'
-        self.opt.o('wetland', 'reverse_request', tmp)
+        self.opt.o('wetland', 'reverse_request',
+                   ', '.join([tmp, address, str(port)]))
 
         return flag
 
@@ -163,7 +164,8 @@ class ssh_server(paramiko.ServerInterface):
             self.opt.o('wetland', 'direct_request', 'failed')
             return paramiko.OPEN_FAILED_CONNECT_FAILED
         else:
-            self.opt.o('wetland', 'direct_request', 'success')
+            self.opt.o('wetland', 'direct_request',
+                       'ori:%s, dest:%s' % (origin, destination))
             service_thread = threading.Thread(target=services.direct_service,
                                               args=(chanid,
                                                     self.hacker_trans,
