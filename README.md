@@ -20,35 +20,37 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
 * paramiko
 * yagmail
 * IPy
-* pygeoip
 * requests
 
 ## Setup and Configuration
 1. Copy wetland.cfg.default to wetland.cfg
 2. Generate keys used by ssh server
-  * cd into folder keys
+  * run `mkdir keys; cd keys`
   * run `ssh-keygen -t rsa`, and put them in `./`
   * run `ssh-keygen -t dsa`, and put them in `./`
   * Remember that Wetland and sshd container should use the same keys.
-3. Download a geoip database used by pygeoip
-  * [GeoLiteCity.dat.gz](http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz)
-  * [GeoIP.dat.gz]( http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz)
-  * Edit path to the db in wetland.cfg
-4. Configure the output plugins
+3. Configure the output plugins
   * enable or disable in [output] section
   * Edit the url of incoming robots when using bearychat
   * Edit user、pwd... when using email
-5. Configure the banner of ssh server
+4. Configure the banner of ssh server
   * Edit banner in wetland.cfg
-  * It should be same with that in sshd contaniner
-6. Install python requirements
+  * It should be same with the ssh banner of sshd contaniner
+5. Install python requirements
   * run `pip install -r requirements`
-7. Install p0f if you want
+6. Install p0f if you want
   * run `git clone https://github.com/p0f/p0f`
   * run `cd p0f`
   * run `./build.sh`
   * Edit [p0fp0f] section in wetland.cfg
   * if you dont need p0f, just disable p0f in [output] section
+7. Install docker
+  * install docker with docs in [www.docker.com](www.docker.com)
+  * run `docker search sshd`, then choose a image running sshd
+  * run `docker run -d --name sshd sshd_image_name`
+  * run `docker inspect sshd`, then edit docker ip address and port in wetland.cfg
+  * sshd's ssh port should be same with wetland's
+  * delete and replace sshd container sometimes if you want
 
 ## Running
 1. Run
@@ -61,6 +63,7 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
   * Maybe you should delete some iface created by networking module by hand.
   * run `ip link list`
   * then `ip link del dev wdxxxxxx`
-  * finally clean up the nat table of iptables
-4. Replay logs
+  * finally clean up the nat table of iptables or just reboot
+4. View logs
+  * run `python util/clearlog.py -p log` will clear logs that only have pwd.log, and pwds will write into -l file, default ./pwd.txt 
   * just use playlog.py in util
