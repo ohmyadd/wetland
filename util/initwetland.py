@@ -6,7 +6,7 @@ import paramiko
 import subprocess
 
 # Get root path
-if not sys.argv[1]:
+if len(sys.argv) == 1:
     print '[-] please specify wetland\'s root path'
     sys.exit(1)
 path = sys.argv[1]
@@ -24,7 +24,7 @@ print '[+] Checking: keys'
 if os.path.exists('keys'):
     print '[+] Exists: \tKeys Folder'
 else:
-    print '[+] Creating Folder: \tkeys'
+    print '[+] Creating: \tfolder keys'
     os.mkdir('keys')
 
 if os.path.exists(os.path.join(path, 'keys', 'id_rsa')):
