@@ -6,7 +6,8 @@ def direct_service(hacker_channel_id, hacker_trans, docker_channel, output):
 
     for i in range(10):
         if hacker_trans._channels.get(hacker_channel_id):
-            break time.sleep(1)
+            break
+        time.sleep(1)
     else:
         # print 'direct wait for channel timeout'
         docker_channel.close()

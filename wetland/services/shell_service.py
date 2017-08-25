@@ -39,7 +39,7 @@ def shell_service(hacker_session, docker_session, output):
                 docker_session.shutdown_write()
                 docker_session.send_exit_status(0)
 
-            if docker_session.eof_received and hacker_session.eof_received:
+            if docker_session.eof_received or hacker_session.eof_received:
                 break
 
     except Exception, e:
