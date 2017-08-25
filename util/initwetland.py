@@ -20,27 +20,26 @@ os.chdir(path)
 
 
 # Generate keys
-print '[+] Checking: \tkeys'
-if os.path.exists('keys'):
-    print '[+] Exists: \tKeys Folder'
+print '[+] Checking: \tdata folder'
+if os.path.exists('data'):
+    print '[+] Exists: \tfolder data'
 else:
-    print '[+] Creating: \tfolder keys'
-    os.mkdir('keys')
+    print '[+] Creating: \tfolder data'
+    os.mkdir('data')
 
-if os.path.exists(os.path.join(path, 'keys', 'id_rsa')):
+if os.path.exists(os.path.join(path, 'data', 'id_rsa')):
     print '[+] Exists: \tid_rsa'
 else:
     print '[+] Creating: \tid_rsa'
     key = paramiko.RSAKey.generate(2048)
-    key.write_private_key_file(os.path.join(path, 'keys', 'id_rsa'))
+    key.write_private_key_file(os.path.join(path, 'data', 'id_rsa'))
 
-if os.path.exists(os.path.join(path, 'keys', 'id_dsa')):
+if os.path.exists(os.path.join(path, 'data', 'id_dsa')):
     print '[+] Exists: \tid_dsa'
 else:
     print '[+] Creating: \tid_dsa'
-    key = paramiko.RSAKey.generate(2048)
     key = paramiko.DSSKey.generate(2048)
-    key.write_private_key_file(os.path.join(path, 'keys', 'id_dsa'))
+    key.write_private_key_file(os.path.join(path, 'data', 'id_dsa'))
 
 
 # Install python dependency
@@ -59,12 +58,11 @@ if s.returncode:
 
 # Clean root folder
 print '[+] Cleaning: \troot folder'
-os.mkdir('doc')
 
-print '[+] Moving: \tdocuments into folder doc'
-shutil.move('README.md',  'doc')
-shutil.move('requirements',  'doc')
+print '[+] Moving: \tdocuments into folder data'
+shutil.move('README.md',  'data')
+shutil.move('requirements',  'data')
 
 print '[+] Copying: \tcfg.default to cfg'
 shutil.copy('wetland.cfg.default', 'wetland.cfg')
-shutil.move('wetland.cfg.default',  'doc')
+shutil.move('wetland.cfg.default',  'data')
