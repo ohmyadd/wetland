@@ -20,7 +20,7 @@ os.chdir(path)
 
 
 # Generate keys
-print '[+] Checking: keys'
+print '[+] Checking: \tkeys'
 if os.path.exists('keys'):
     print '[+] Exists: \tKeys Folder'
 else:
