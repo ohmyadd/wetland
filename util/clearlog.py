@@ -46,7 +46,10 @@ def summary(logs_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Delete pwdlog, Leave others')
     parser.add_argument("p", help='The path of log folder')
-    parser.add_argument("-l", default='pwd.txt', help='The path of pwd file')
+    parser.add_argument("-l", help='The path of pwd file')
     args = parser.parse_args()
+    if not args.l:
+        args.l = os.path.join(args.p, 'pwd.txt')
+
     clear(args.p, args.l)
     summary(args.p)

@@ -67,3 +67,13 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
 4. View logs
   * run `python util/clearlog.py -p log` will clear logs that only have pwd.log, and pwds will write into -l file, default ./pwd.txt 
   * just use playlog.py in util
+
+## TODO
+* wetland dockerize
+* create sshd docker image realistic
+* automate create sshd docker
+
+
+* add watchdog
+* take use of bearychat incoming outgoing
+* distribute log system & support hpfeeds
