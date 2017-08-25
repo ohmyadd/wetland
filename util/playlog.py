@@ -240,16 +240,23 @@ class forward_player(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Replay the logs of wetlan')
     parser.add_argument('-t', choices=['shell', 'exec', 'forward'],
-                        required=True, help='Type of the log file')
-    parser.add_argument("-p", required=True, help='The path of log file')
+                        default='filetype', help='Type of the log file')
+    parser.add_argument("p", help='The path of log file')
     parser.add_argument("-s", default='../download/scp',
                         help='Extract file to this folder in exec logs')
     args = parser.parse_args()
+
+    if args.t == 'filetype':
+        t = os.path.splitext(os.path.split(args.p)[1])[0]
+        if t not in ['shell', 'exec', 'direct', 'reverse']:
+            print '[-] filename unknow or you should specify arguemnt -t'
+            sys.exit(0)
+        args.t = t
 
     if args.t == 'shell':
         a = shell_player(args.p)
     elif args.t == 'exec':
         a = exec_player(args.p, args.s)
-    elif args.t == 'forward':
+    elif args.t in ['forward', 'direct', 'reverse']:
         a = forward_player(args.p)
     a.start()
