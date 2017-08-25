@@ -25,24 +25,25 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
 ## Setup and Configuration
 1. Copy wetland.cfg.default to wetland.cfg
 2. Generate keys used by ssh server
-  * run `mkdir keys; cd keys`
-  * run `ssh-keygen -t rsa`, and put them in `./`
-  * run `ssh-keygen -t dsa`, and put them in `./`
+  * run `mkdir data`
+  * run `ssh-keygen -t rsa`, and put them in `data/`
+  * run `ssh-keygen -t dsa`, and put them in `data/`
   * Remember that Wetland and sshd container should use the same keys.
-3. Configure the output plugins
-  * enable or disable in [output] section
-  * Edit the url of incoming robots when using bearychat
-  * Edit user、pwd... when using email
+3. Install python requirements
+  * run `pip install -r requirements`
 4. Configure the banner of ssh server
   * Edit banner in wetland.cfg
   * It should be same with the ssh banner of sshd contaniner
-5. Install python requirements
-  * run `pip install -r requirements`
+5. Or you can run `python util/initwetland.py ./`，this script will do all the work above 
+5. Configure the output plugins in wetland.cfg
+  * enable or disable in `[output]` section
+  * Edit the url of incoming robots when using bearychat
+  * Edit user、pwd... when using email
 6. Install p0f if you want
   * run `git clone https://github.com/p0f/p0f`
   * run `cd p0f`
   * run `./build.sh`
-  * Edit [p0fp0f] section in wetland.cfg
+  * Edit `[p0fp0f]` section in wetland.cfg
   * if you dont need p0f, just disable p0f in [output] section
 7. Install docker
   * install docker with docs in [www.docker.com](www.docker.com)
