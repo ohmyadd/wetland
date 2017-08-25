@@ -7,10 +7,10 @@ import subprocess
 
 # Get root path
 path = sys.argv[1]
-print '[+] root path is %s' % path
+print '[+] Root Path: \t%s' % path
 
 if not os.path.exists(path):
-    print '[-] root path not exists'
+    print '[-] Not Exists: \t root path'
     sys.exit(1)
 
 os.chdir(path)
@@ -19,22 +19,22 @@ os.chdir(path)
 # Generate keys
 print '[+] checking keys'
 if os.path.exists('keys'):
-    print '[+] keys folder exists'
+    print '[+] Exists: \tKeys Folder'
 else:
-    print '[+] creating folder keys'
+    print '[+] Creating Folder: \tkeys'
     os.mkdir('keys')
 
 if os.path.exists(os.path.join(path, 'keys', 'id_rsa')):
-    print '[+] id_rsa exists'
+    print '[+] Exists: \tid_rsa'
 else:
-    print '[+] creating id_rsa'
+    print '[+] Creating: \tid_rsa'
     key = paramiko.RSAKey.generate(2048)
     key.write_private_key_file(os.path.join(path, 'keys', 'id_rsa'))
 
-if os.path.exists(os.path.join(path, 'keys', 'id_rsa')):
-    print '[+] id_rsa exists'
+if os.path.exists(os.path.join(path, 'keys', 'id_dsa')):
+    print '[+] Exists: \tid_dsa'
 else:
-    print '[+] creating id_ds'
+    print '[+] Creating: \tid_dsa'
     key = paramiko.RSAKey.generate(2048)
     key = paramiko.DSSKey.generate(2048)
     key.write_private_key_file(os.path.join(path, 'keys', 'id_dsa'))
@@ -42,10 +42,10 @@ else:
 
 # Install python dependency
 if not os.path.exists('requirements'):
-    print '[-] requirements not found'
+    print '[-] Not found: \trequirements'
     sys.exit(1)
 
-print '[+] installing python dependency'
+print '[+] Installing: \tpython dependency'
 s = subprocess.Popen("pip install -r requirements", shell=True,
                      stdout=subprocess.PIPE)
 s.communicate()
@@ -55,13 +55,13 @@ if s.returncode:
 
 
 # Clean root folder
-print '[+] clean root folder'
+print '[+] Clean: \troot folder'
 os.mkdir('doc')
 
-print '[+] moving documents into folder doc'
+print '[+] Moving: \tdocuments into folder doc'
 shutil.move('README.md',  'doc')
 shutil.move('requirements',  'doc')
 
-print '[+] copying cfg.default to cfg'
+print '[+] Copying; \tcfg.default to cfg'
 shutil.copy('wetland.cfg.default', 'wetland.cfg')
 shutil.move('wetland.cfg.default',  'doc')
