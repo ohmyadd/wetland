@@ -6,6 +6,9 @@ import paramiko
 import subprocess
 
 # Get root path
+if not sys.argv[1]:
+    print '[-] please specify wetland\'s root path'
+    sys.exit(1)
 path = sys.argv[1]
 print '[+] Root Path: \t%s' % path
 
@@ -17,7 +20,7 @@ os.chdir(path)
 
 
 # Generate keys
-print '[+] checking keys'
+print '[+] Checking: keys'
 if os.path.exists('keys'):
     print '[+] Exists: \tKeys Folder'
 else:
@@ -45,7 +48,7 @@ if not os.path.exists('requirements'):
     print '[-] Not found: \trequirements'
     sys.exit(1)
 
-print '[+] Installing: \tpython dependency'
+print '[+] Installing:\tpython dependency'
 s = subprocess.Popen("pip install -r requirements", shell=True,
                      stdout=subprocess.PIPE)
 s.communicate()
@@ -55,13 +58,13 @@ if s.returncode:
 
 
 # Clean root folder
-print '[+] Clean: \troot folder'
+print '[+] Cleaning: \troot folder'
 os.mkdir('doc')
 
 print '[+] Moving: \tdocuments into folder doc'
 shutil.move('README.md',  'doc')
 shutil.move('requirements',  'doc')
 
-print '[+] Copying; \tcfg.default to cfg'
+print '[+] Copying: \tcfg.default to cfg'
 shutil.copy('wetland.cfg.default', 'wetland.cfg')
 shutil.move('wetland.cfg.default',  'doc')
