@@ -75,7 +75,7 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
 ## TODO
 * wetland dockerize
 * create sshd docker image realistic
-* automate create sshd docker
+* automate create sshd container
 
 
 * add watchdog
