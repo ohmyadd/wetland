@@ -66,8 +66,11 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
   * then `ip link del dev wdxxxxxx`
   * finally clean up the nat table of iptables or just reboot
 4. View logs
-  * run `python util/clearlog.py -p log` will clear logs that only have pwd.log, and pwds will write into -l file, default ./pwd.txt 
-  * just use playlog.py in util
+  * run `python util/clearlog.py -p log` will remove logs that only have pwd.log, and username:password will write into -l file, default ./pwd.txt 
+  * then use playlog.py in util
+5. file system changes
+  * filechange.py will copy the read-write layer of the sshd container to ./ , the layer includes that hacker create and remove
+* e.g. `docker inspect sshd --format '{{.Id}}' | python filechange.py -`
 
 ## TODO
 * wetland dockerize
