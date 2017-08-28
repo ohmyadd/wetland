@@ -26,6 +26,10 @@ banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
 # The folder to store the files uploaded by hackers.
 sftp = log/sftp
 
+[network]
+# Enable advanced network, wetland must has root permissions
+enable = true
+
 [output]
 # Ways to report to you when wetland visited by hackers.
 # except log, others only report wetland log
