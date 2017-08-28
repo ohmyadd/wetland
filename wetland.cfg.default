@@ -28,7 +28,7 @@ sftp = log/sftp
 
 [network]
 # Enable advanced network, wetland must has root permissions
-enable = true
+enable = false
 
 [output]
 # Ways to report to you when wetland visited by hackers.
