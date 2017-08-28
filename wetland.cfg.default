@@ -24,7 +24,7 @@ banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
 
 [files]
 # The folder to store the files uploaded by hackers.
-sftp = download/sftp
+sftp = log/sftp
 
 [output]
 # Ways to report to you when wetland visited by hackers.
