@@ -12,12 +12,10 @@ name = Wetland HoneyPot 1
 
 [ssh]
 # Generate wth `ssh-keygen -t rsa`
-public_rsa = keys/id_rsa.pub
-private_rsa = keys/id_rsa
+private_rsa = data/id_rsa
 
 # Generate with `ssh-keygen -t dsa`
-public_dsa = keys/id_dsa.pub
-private_dsa = keys/id_dsa
+private_dsa = data/id_dsa
 
 # Banner of wetland server
 # It should be same as with banner of sshd docker
@@ -26,12 +24,16 @@ banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
 
 [files]
 # The folder to store the files uploaded by hackers.
-sftp = download/sftp
+sftp = log/sftp
+
+[network]
+# Enable advanced network, wetland must has root permissions
+enable = true
 
 [output]
 # Ways to report to you when wetland visited by hackers.
 # except log, others only report wetland log
-p0fp0f = true
+p0fp0f = false
 log = true
 email = false
 bearychat = true
@@ -63,9 +65,7 @@ path = log
 [p0fp0f]
 # Path to p0f folder
 path = p0f
-
 # iface to sniff to sniff
 iface = eth0
-
 # sock name of p0f api
 sockname = wetland

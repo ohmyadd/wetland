@@ -26,16 +26,23 @@ def reverse_handler2(docker_channel, origin, destination, hacker_trans,
             if hacker_channel in r:
                 text = hacker_channel.recv(1024)
                 output.o('content', 'reverse', '[H]:'+text.encode("hex"))
-                if len(text) == 0:
-                    break
                 docker_channel.send(text)
 
             if docker_channel in r:
                 text = docker_channel.recv(1024)
                 output.o('content', 'reverse', '[V]:'+text.encode("hex"))
-                if len(text) == 0:
-                    break
                 hacker_channel.send(text)
+
+            if docker_channel.eof_received:
+                hacker_channel.shutdown_write()
+                hacker_channel.send_exit_status(0)
+
+            if hacker_channel.eof_received:
+                docker_channel.shutdown_write()
+                docker_channel.send_exit_status(0)
+
+            if docker_channel.eof_received and hacker_channel.eof_received:
+                break
 
     except Exception as e:
         print e
