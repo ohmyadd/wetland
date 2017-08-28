@@ -26,7 +26,8 @@ class ssh_server(paramiko.ServerInterface):
 
         # bind docker' socket on fake ip
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind((str(self.network.fake_ip), self.hacker_port))
+        if self.cfg.get("network", "enable").lower() == 'true':
+            sock.bind((str(self.network.fake_ip), self.hacker_port))
         sock.connect((self.docker_host, self.docker_port))
 
         # init docker's transport with socket
