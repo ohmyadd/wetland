@@ -72,8 +72,12 @@ Wetland is based on python ssh module [paramiko](https://github.com/paramiko/par
   * filechange.py will copy the read-write layer of the sshd container to ./ , the layer includes that hacker create and remove
 * e.g. `docker inspect sshd --format '{{.Id}}' | python filechange.py -`
 
+## Dockerized wetland
+* run `docker pull ohmyadd/wetland`
+* see it in [docker hub](https://hub.docker.com/r/ohmyadd/wetland/)
+
 ## TODO
-* wetland dockerize
+* wetland dockerized
 * create sshd docker image realistic
 * automate create sshd container
 
