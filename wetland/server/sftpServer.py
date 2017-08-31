@@ -81,7 +81,7 @@ class sftp_server (SFTPServerInterface):
         self.opt.o("sftpserver", 'init', 'success')
 
     def canonicalize(self, path):
-        return self.docker_client.normalize(path)
+        return path
 
     def list_folder(self, path):
         self.opt.o("sftpserver", 'list', path)
