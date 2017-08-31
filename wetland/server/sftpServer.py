@@ -16,13 +16,13 @@ class remote_sftp_handle(SFTPHandle):
         self.opt = output
 
     def close(self):
-        self.opt.o("sftpfile", 'close', self.filename)
+        self.opt.o("sftpfile", 'close', self.file_name)
         self.remote_file.close()
         if self.save_file:
             self.save_file.close()
 
     def read(self, offset, length):
-        self.opt.o("sftpfile", 'read', self.filename)
+        self.opt.o("sftpfile", 'read', self.file_name)
         if not self.remote_file.readable():
             return SFTP_OP_UNSUPPORTED
 
@@ -34,7 +34,7 @@ class remote_sftp_handle(SFTPHandle):
             return SFTPServer.convert_errno(e.errno)
 
     def write(self, offset, data):
-        self.opt.o("sftpfile", 'write', self.filename)
+        self.opt.o("sftpfile", 'write', self.file_name)
         if not self.remote_file.writable():
             return SFTP_OP_UNSUPPORTED
 
@@ -51,7 +51,7 @@ class remote_sftp_handle(SFTPHandle):
         return SFTP_OK
 
     def stat(self):
-        self.opt.o("sftpfile", 'stat', self.filename)
+        self.opt.o("sftpfile", 'stat', self.file_name)
         try:
             return self.remote_file.stat()
         except IOError as e:
@@ -60,7 +60,7 @@ class remote_sftp_handle(SFTPHandle):
             return SFTP_OK
 
     def chattr(self, attr):
-        self.opt.o("sftpfile", 'chattr', self.filename)
+        self.opt.o("sftpfile", 'chattr', self.file_name)
         try:
             self.remote_file.chattr(attr)
 

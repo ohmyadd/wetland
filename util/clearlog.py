@@ -18,7 +18,7 @@ def clear(logs_path, pwd):
                 for i in r.readlines():
                     w.writelines(i.split(" ")[1] + '\n')
 
-        if not len(set(log) & valueSet):
+        if (not len(set(log) & valueSet)) and ip != 'sftp':
             os.system('rm -rf %s' % os.path.join(logs_path, ip))
 
 
