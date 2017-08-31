@@ -16,13 +16,13 @@ class remote_sftp_handle(SFTPHandle):
         self.opt = output
 
     def close(self):
-        self.opt.o("sftpfile", 'close', self.filename)
+        self.opt.o("sftpfile", 'close', self.file_name)
         self.remote_file.close()
         if self.save_file:
             self.save_file.close()
 
     def read(self, offset, length):
-        self.opt.o("sftpfile", 'read', self.filename)
+        self.opt.o("sftpfile", 'read', self.file_name)
         if not self.remote_file.readable():
             return SFTP_OP_UNSUPPORTED
 
@@ -34,7 +34,7 @@ class remote_sftp_handle(SFTPHandle):
             return SFTPServer.convert_errno(e.errno)
 
     def write(self, offset, data):
-        self.opt.o("sftpfile", 'write', self.filename)
+        self.opt.o("sftpfile", 'write', self.file_name)
         if not self.remote_file.writable():
             return SFTP_OP_UNSUPPORTED
 
@@ -51,7 +51,7 @@ class remote_sftp_handle(SFTPHandle):
         return SFTP_OK
 
     def stat(self):
-        self.opt.o("sftpfile", 'stat', self.filename)
+        self.opt.o("sftpfile", 'stat', self.file_name)
         try:
             return self.remote_file.stat()
         except IOError as e:
@@ -60,7 +60,7 @@ class remote_sftp_handle(SFTPHandle):
             return SFTP_OK
 
     def chattr(self, attr):
-        self.opt.o("sftpfile", 'chattr', self.filename)
+        self.opt.o("sftpfile", 'chattr', self.file_name)
         try:
             self.remote_file.chattr(attr)
 
@@ -81,7 +81,7 @@ class sftp_server (SFTPServerInterface):
         self.opt.o("sftpserver", 'init', 'success')
 
     def canonicalize(self, path):
-        return self.docker_client.normalize(path)
+        return path
 
     def list_folder(self, path):
         self.opt.o("sftpserver", 'list', path)
@@ -187,23 +187,16 @@ class sftp_server (SFTPServerInterface):
         try:
             if attr._flags & attr.FLAG_PERMISSIONS:
                 self.docker_client.chmod(path, attr.st_mode)
-                self.logger.info("chmod mod:%o path:%s" % (attr.st_mode, path))
 
             if attr._flags & attr.FLAG_UIDGID:
                 self.docker_client.chown(path, attr.st_uid, attr.st_gid)
-                self.logger.info("chown uid:%d gid:%d path:%s" % (
-                                              attr.st_uid, attr.st_gid, path))
 
             if attr._flags & attr.FLAG_AMTIME:
                 self.docker_client.utime(path,
                                          (attr.st_atime, attr.st_mtime))
-                self.logger.info("utime atime:%d stime:%d path:%s" % (
-                                          attr.st_atime, attr.st_mtime, path))
 
             if attr._flags & attr.FLAG_SIZE:
                 self.docker_client.truncate(path, attr.st_size)
-                self.logger.info("truncate size:%d path:%s" % (attr.st_size,
-                                                               path))
 
         except IOError as e:
             return SFTPServer.convert_errno(e.errno)
