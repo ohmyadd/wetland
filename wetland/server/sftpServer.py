@@ -187,23 +187,16 @@ class sftp_server (SFTPServerInterface):
         try:
             if attr._flags & attr.FLAG_PERMISSIONS:
                 self.docker_client.chmod(path, attr.st_mode)
-                self.logger.info("chmod mod:%o path:%s" % (attr.st_mode, path))
 
             if attr._flags & attr.FLAG_UIDGID:
                 self.docker_client.chown(path, attr.st_uid, attr.st_gid)
-                self.logger.info("chown uid:%d gid:%d path:%s" % (
-                                              attr.st_uid, attr.st_gid, path))
 
             if attr._flags & attr.FLAG_AMTIME:
                 self.docker_client.utime(path,
                                          (attr.st_atime, attr.st_mtime))
-                self.logger.info("utime atime:%d stime:%d path:%s" % (
-                                          attr.st_atime, attr.st_mtime, path))
 
             if attr._flags & attr.FLAG_SIZE:
                 self.docker_client.truncate(path, attr.st_size)
-                self.logger.info("truncate size:%d path:%s" % (attr.st_size,
-                                                               path))
 
         except IOError as e:
             return SFTPServer.convert_errno(e.errno)
