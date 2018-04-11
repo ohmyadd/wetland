@@ -15,9 +15,9 @@ pname = get_plugins()
 
 
 class output(object):
-    def __init__(self, hacker_ip):
-        self.hacker_ip = hacker_ip
-        self.plugins = [impt('wetland.output_plugin.'+n).plugin(self.hacker_ip)
+    def __init__(self, server):
+        self.server = server
+        self.plugins = [impt('wetland.output_plugin.'+n).plugin(self.server)
                         for n in pname]
 
     def o(self, *args):

@@ -35,7 +35,26 @@ class tcp_handler(SocketServer.BaseRequestHandler):
                     self.server.cfg.get("wetland", "docker_addr"))
         nw.create()
 
-        sServer = sshServer.ssh_server(transport=transport, network=nw)
+        if self.server.cfg.getboolean("wetland", "req_public_ip"):
+            import sys
+            import socket
+            import random
+
+            socket.setdefaulttimeout(2)
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((sys.argv[1], random.randint(40000, 60000)))
+            s.connect(('www.cip.cc', 80))
+            s.send("GET / HTTP/1.1\r\n"
+                   "Host:www.cip.cc\r\n"
+                   "User-Agent:curl\r\n\r\n")
+            myip = s.recv(1024).split("\r\n")[-4].split('\n')[0].split(': ')[1]
+            s.close()
+        else:
+            myip, _ = transport.getpeername()
+
+        sServer = sshServer.ssh_server(transport=transport,
+                                       network=nw, myip=myip)
 
         try:
             transport.start_server(server=sServer)

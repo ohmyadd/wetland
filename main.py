@@ -1,4 +1,3 @@
-import paramiko
 from wetland import config
 from wetland.server import tcpServer
 

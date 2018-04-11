@@ -8,7 +8,8 @@ logpath = config.cfg.get("log", "path")
 if not os.path.exists(logpath):
     os.makedirs(logpath)
 
-paramiko.util.log_to_file(logpath + '/paramiko.log')
+# paramiko.log maybe too large
+# paramiko.util.log_to_file(logpath + '/paramiko.log')
 
 # sensor name
 name = config.cfg.get("wetland", "name")

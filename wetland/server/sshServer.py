@@ -11,15 +11,16 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, network):
+    def __init__(self, transport, network, myip):
         self.cfg = config.cfg
         self.network = network
+        self.myip = myip
 
         # init hacker's transport
         self.hacker_trans = transport
         self.hacker_ip, self.hacker_port = transport.getpeername()
 
-        self.opt = output(self.hacker_ip)
+        self.opt = output(self)
 
         self.docker_host = self.cfg.get("wetland", "docker_addr")
         self.docker_port = self.cfg.getint("wetland", "docker_port")

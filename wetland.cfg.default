@@ -2,6 +2,7 @@
 # IP addresses to listen for incoming SSH connections.
 wetland_addr = 0.0.0.0
 wetland_port = 22
+req_public_ip = true
 
 # IP address to send outgoing SSH connections.
 docker_addr = 172.17.0.2
@@ -34,10 +35,19 @@ enable = false
 # Ways to report to you when wetland visited by hackers.
 # except log, others only report wetland log
 p0fp0f = false
-log = true
+log = false
+json = true
 email = false
 bearychat = true
 
+[json]
+
+# file store jsons
+file = log/wetlandjson.log
+# log to this tcp socket
+# tcp = 1.1.1.1:1234
+# log to this udp socket
+# udp = 2.2.2.2:1234
 
 [bearychat]
 # Urls of bearychat incoming robots
