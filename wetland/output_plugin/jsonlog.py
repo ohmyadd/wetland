@@ -10,14 +10,18 @@ class plugin(object):
     def __init__(self, server):
         self.server = server
         self.methods = list(set(['file', 'tcp', 'udp']) &
-                            set(config.cfg.options('json')))
+                            set(config.cfg.options('jsonlog')))
 
         if 'tcp' in self.methods:
-            self.tcpsock = config.cfg.get('json', 'tcp').split(':')
+            ip, port = config.cfg.get('jsonlog', 'tcp').split(':')
+            port = int(port)
+            self.tcpsock = (ip, port)
         if 'udp' in self.methods:
-            self.udpsock = config.cfg.get('json', 'udp').split(':')
+            ip, port = config.cfg.get('jsonlog', 'udp').split(':')
+            port = int(port)
+            self.udpsock = (ip, port)
         if 'file' in self.methods:
-            self.logfile = config.cfg.get('json', 'file')
+            self.logfile = config.cfg.get('jsonlog', 'file')
 
     def file(self, data):
         with open(self.logfile, 'a') as logfile:
@@ -36,8 +40,8 @@ class plugin(object):
         s.close()
 
     def send(self, subject, action, content):
-        t = datetime.fromtimestamp(time.time(),
-                                   tz=pytz.timezone('UTC')).isoformat()
+        t = datetime.datetime.fromtimestamp(time.time(),
+                                            tz=pytz.timezone('UTC')).isoformat()
 
         if subject == 'wetland':
             pass

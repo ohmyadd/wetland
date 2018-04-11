@@ -43,7 +43,8 @@ class tcp_handler(SocketServer.BaseRequestHandler):
             socket.setdefaulttimeout(2)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((sys.argv[1], random.randint(40000, 60000)))
+            s.bind((self.server.cfg.get('wetland', 'wetland_addr'),
+                    random.randint(40000, 60000)))
             s.connect(('www.cip.cc', 80))
             s.send("GET / HTTP/1.1\r\n"
                    "Host:www.cip.cc\r\n"

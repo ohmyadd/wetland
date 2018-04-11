@@ -36,11 +36,11 @@ enable = false
 # except log, others only report wetland log
 p0fp0f = false
 log = false
-json = true
+jsonlog = true
 email = false
 bearychat = true
 
-[json]
+[jsonlog]
 
 # file store jsons
 file = log/wetlandjson.log
