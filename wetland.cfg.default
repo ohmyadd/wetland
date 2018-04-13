@@ -2,7 +2,7 @@
 # IP addresses to listen for incoming SSH connections.
 wetland_addr = 0.0.0.0
 wetland_port = 22
-req_public_ip = true
+req_public_ip = false
 
 # IP address to send outgoing SSH connections.
 docker_addr = 172.17.0.2
