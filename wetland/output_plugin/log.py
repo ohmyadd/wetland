@@ -16,13 +16,13 @@ name = config.cfg.get("wetland", "name")
 
 
 class plugin(object):
-    def __init__(self, hacker_ip):
-        self.hacker_ip = hacker_ip
+    def __init__(self, server):
+        self.server = server
         self.logpath = None
         self.get_logpath()
 
     def get_logpath(self):
-        self.logpath = os.path.join(logpath, self.hacker_ip)
+        self.logpath = os.path.join(logpath, self.server.hacker_ip)
         if not os.path.exists(self.logpath):
             os.makedirs(self.logpath)
 

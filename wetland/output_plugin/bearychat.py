@@ -11,8 +11,8 @@ urls = [v for k, v in config.cfg.items("bearychat") if k.startswith("url")]
 
 
 class plugin(object):
-    def __init__(self, hacker_ip):
-        self.hacker_ip = hacker_ip
+    def __init__(self, server):
+        self.server = server
 
     def send(self, subject, action, content):
         if subject != 'wetland':
@@ -23,12 +23,12 @@ class plugin(object):
 
         text = []
         text.append('Sensor:\t%s' % name)
-        text.append('Hacker:\t%s' % self.hacker_ip)
+        text.append('Hacker:\t%s' % self.server.hacker_ip)
         text.append('Action:\t%s' % action)
         text.append('Content:\t%s' % content)
 
         body = {'text': '\n'.join(text), 'markdown': True,
-                'notification':'Wetland Honeypot Report'}
+                'notification': 'Wetland Honeypot Report'}
         headers = {"Content-Type": "application/json"}
         data = json.dumps(body)
 
