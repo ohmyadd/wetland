@@ -20,7 +20,7 @@ def shell_service(hacker_session, docker_session, output):
                     output.o('wetland', 'shell command', ''.join(command))
                     command = []
                 else:
-                    command.append(visual[text])
+                    command.append(text)
 
             if docker_session.recv_ready():
                 text = docker_session.recv(1024)

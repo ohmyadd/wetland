@@ -24,6 +24,7 @@ class plugin(object):
         text = []
         text.append('Sensor:\t%s' % name)
         text.append('Hacker:\t%s' % self.server.hacker_ip)
+        text.append('MyIP:\t%s' % self.server.myip)
         text.append('Action:\t%s' % action)
         text.append('Content:\t%s' % content)
 
