@@ -19,8 +19,10 @@ def shell_service(hacker_session, docker_session, output):
                 if text == '\r':
                     output.o('wetland', 'shell command', ''.join(command))
                     command = []
+                elif text == '\x7f':
+                    command.pop()
                 else:
-                    command.append(text)
+                    command.append(visual[text])
 
             if docker_session.recv_ready():
                 text = docker_session.recv(1024)
