@@ -36,7 +36,6 @@ class tcp_handler(SocketServer.BaseRequestHandler):
         nw.create()
 
         if self.server.cfg.getboolean("wetland", "req_public_ip"):
-            import sys
             import socket
             import random
 
@@ -52,7 +51,7 @@ class tcp_handler(SocketServer.BaseRequestHandler):
             myip = s.recv(1024).split("\r\n")[-4].split('\n')[0].split(': ')[1]
             s.close()
         else:
-            myip, _ = transport.getpeername()
+            myip, _ = transport.sock.getsockname()
 
         sServer = sshServer.ssh_server(transport=transport,
                                        network=nw, myip=myip)

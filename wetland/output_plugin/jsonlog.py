@@ -44,15 +44,15 @@ class plugin(object):
                                             tz=pytz.timezone('UTC')).isoformat()
 
         if subject == 'wetland':
-            pass
-
-        elif subject == 'content':
             data = {'timestamp': t, 'src': self.server.hacker_ip,
                     'dst': self.server.myip, 'type': action,
                     'content': content}
             data = json.dumps(data)
             for m in self.methods:
                 getattr(self, m)(data)
+
+        elif subject == 'content':
+            pass
 
         elif subject in ['sftpfile', 'sftpserver']:
             pass

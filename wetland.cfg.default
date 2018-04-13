@@ -36,9 +36,9 @@ enable = false
 # except log, others only report wetland log
 p0fp0f = false
 log = false
-jsonlog = true
+jsonlog = false
 email = false
-bearychat = true
+bearychat = false
 
 [jsonlog]
 

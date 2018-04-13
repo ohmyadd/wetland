@@ -10,6 +10,7 @@ def exec_service(hacker_session, docker_session, cmd, output):
             if hacker_session.recv_ready():
                 text = hacker_session.recv(1024)
                 output.o('content', 'exec', '[H]:'+text.encode("hex"))
+                output.o('wetland', 'exec command', text)
                 # print 'hacker said: ', text.encode("hex"), text
                 docker_session.sendall(text)
 
