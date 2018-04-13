@@ -19,7 +19,7 @@ def shell_service(hacker_session, docker_session, output):
                 if text == '\r':
                     output.o('wetland', 'shell command', ''.join(command))
                     command = []
-                elif text == '\x7f':
+                elif text == '\x7f' and command:
                     command.pop()
                 else:
                     command.append(visual[text])
