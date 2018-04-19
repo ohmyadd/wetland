@@ -60,7 +60,7 @@ class plugin(object):
         data = {'timestamp': t, 'src': self.server.hacker_ip,
                 'dst': self.server.myip, 'type': action,
                 'content': content, 'sensor': self.name}
-        data = json.dumps(data)
+        data = json.dumps(data) + '\n'
         for m in self.methods:
             getattr(self, m)(data)
         return True
