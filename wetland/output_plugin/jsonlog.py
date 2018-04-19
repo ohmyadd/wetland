@@ -11,7 +11,7 @@ class plugin(object):
         self.server = server
         self.methods = list(set(['file', 'tcp', 'udp']) &
                             set(config.cfg.options('jsonlog')))
-        self.sensor = config.cfg.get("wetland", "name")
+        self.name = config.cfg.get("wetland", "name")
 
         if 'tcp' in self.methods:
             ip, port = config.cfg.get('jsonlog', 'tcp').split(':')
