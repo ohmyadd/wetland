@@ -57,9 +57,11 @@ class plugin(object):
         else:
             return True
 
-        data = {'timestamp': t, 'src': self.server.hacker_ip,
-                'dst': self.server.myip, 'type': action,
-                'content': content, 'sensor': self.name}
+        data = {'timestamp': t, 'src_ip': self.server.hacker_ip,
+                'dst_ip': self.server.myip, 'action': action,
+                'content': content, 'sensor': self.name,
+                'src_port': self.server.hacker_port,
+                'dst_port': 22}
         data = json.dumps(data) + '\n'
         for m in self.methods:
             getattr(self, m)(data)
