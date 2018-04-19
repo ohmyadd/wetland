@@ -11,6 +11,7 @@ class plugin(object):
         self.server = server
         self.methods = list(set(['file', 'tcp', 'udp']) &
                             set(config.cfg.options('jsonlog')))
+        self.sensor = config.cfg.get("wetland", "name")
 
         if 'tcp' in self.methods:
             ip, port = config.cfg.get('jsonlog', 'tcp').split(':')
@@ -43,16 +44,23 @@ class plugin(object):
         t = datetime.datetime.fromtimestamp(time.time(),
                                             tz=pytz.timezone('UTC')).isoformat()
 
-        if subject == 'wetland':
-            data = {'timestamp': t, 'src': self.server.hacker_ip,
-                    'dst': self.server.myip, 'type': action,
-                    'content': content}
-            data = json.dumps(data)
-            for m in self.methods:
-                getattr(self, m)(data)
-
-        elif subject == 'content':
+        if subject == 'wetland' and \
+           action in ('login', 'shell command', 'exec command',
+                      'direct_request', 'reverse_request'):
             pass
 
-        elif subject in ['sftpfile', 'sftpserver']:
+        elif subject in ('sftpfile', 'sftpserver'):
             pass
+
+        elif subject == 'content' and action in ('pwd',):
+            pass
+        else:
+            return True
+
+        data = {'timestamp': t, 'src': self.server.hacker_ip,
+                'dst': self.server.myip, 'type': action,
+                'content': content, 'sensor': self.name}
+        data = json.dumps(data)
+        for m in self.methods:
+            getattr(self, m)(data)
+        return True
