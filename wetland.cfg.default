@@ -43,7 +43,7 @@ bearychat = false
 [jsonlog]
 
 # file store jsons
-file = log/wetlandjson.log
+# file = log/wetlandjson.log
 # log to this tcp socket
 # tcp = 1.1.1.1:1234
 # log to this udp socket
