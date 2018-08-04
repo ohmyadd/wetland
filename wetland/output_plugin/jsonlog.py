@@ -45,7 +45,7 @@ class plugin(object):
                                             tz=pytz.timezone('UTC')).isoformat()
 
         if subject == 'wetland' and \
-           action in ('login', 'shell command', 'exec command',
+           action in ('login_successful', 'shell command', 'exec command',
                       'direct_request', 'reverse_request'):
             pass
 
