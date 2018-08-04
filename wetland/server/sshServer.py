@@ -52,7 +52,8 @@ class ssh_server(paramiko.ServerInterface):
         except Exception:
             return paramiko.AUTH_FAILED
         else:
-            self.opt.o('wetland', 'login', 'login successful')
+            self.opt.o('wetland', 'login_successful',
+                       ":".join((username, password)))
             return paramiko.AUTH_SUCCESSFUL
 
     def check_auth_publickey(self, username, key):
