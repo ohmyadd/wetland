@@ -13,8 +13,8 @@ name = config.cfg.get("wetland", "name")
 host = config.cfg.get("mqtt", "host")
 keys_path = config.cfg.get("mqtt", "keys_path")
 ca_certs = keys_path + 'ca.crt'
-cert_file = keys_path + 'server.crt'
-key_file = keys_path + 'server.key'
+cert_file = keys_path + 'client.crt'
+key_file = keys_path + 'client.key'
 
 
 class plugin(object):
