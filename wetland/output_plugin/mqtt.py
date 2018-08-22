@@ -20,6 +20,7 @@ key_file = keys_path + 'server.key'
 class plugin(object):
     def __init__(self, server):
         self.server = server
+        self.name = config.cfg.get("wetland", "name")
 
     def send(self, subject, action, content):
         t = datetime.datetime.fromtimestamp(time.time(),
