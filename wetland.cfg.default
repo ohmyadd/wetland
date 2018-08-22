@@ -39,6 +39,11 @@ log = false
 jsonlog = false
 email = false
 bearychat = false
+mqtt = false
+
+[mqtt]
+# host = xxx
+# key_path = /etc/keys/
 
 [jsonlog]
 
