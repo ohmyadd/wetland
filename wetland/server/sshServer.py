@@ -11,10 +11,11 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, network, myip):
+    def __init__(self, transport, network, myip, whitelist=None):
         self.cfg = config.cfg
         self.network = network
         self.myip = myip
+        self.whitelist = whitelist
 
         # init hacker's transport
         self.hacker_trans = transport
@@ -43,8 +44,11 @@ class ssh_server(paramiko.ServerInterface):
         return 'password'
 
     def check_auth_password(self, username, password):
-
         self.opt.o('content', 'pwd', ":".join((username, password)))
+
+        if self.whitelist is not None and self.hacker_ip not in self.whitelist:
+            return paramiko.AUTH_FAILED
+
         try:
             # redirect all auth request to sshd container
             self.docker_trans.auth_password(username=username,

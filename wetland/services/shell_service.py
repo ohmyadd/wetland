@@ -4,6 +4,7 @@ import json
 with open(os.path.join(os.path.dirname(__file__), 'visual.txt')) as txt:
     visual = json.load(txt)
 
+
 def shell_service(hacker_session, docker_session, output):
 
     hacker_session.settimeout(3600)
@@ -17,7 +18,10 @@ def shell_service(hacker_session, docker_session, output):
                 docker_session.sendall(text)
                 output.o('content', 'shell', '[H]:'+text.encode("hex"))
                 if text == '\r':
-                    output.o('wetland', 'shell command', ''.join(command))
+                    cmd = ''.join(command)
+                    output.o('wetland', 'shell command', cmd)
+                    if 'wget' in cmd:
+                        output.downandup(cmd)
                     command = []
                 elif text == '\x7f' and command:
                     command.pop()

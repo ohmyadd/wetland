@@ -1,16 +1,53 @@
+import re
+import os
+import uuid
+from wetland.config import cfg
+
+
 def exec_service(hacker_session, docker_session, cmd, output):
 
     docker_session.exec_command(cmd)
     output.o('content', 'exec', "N"*20)
     output.o('content', 'exec', '[H]:'+cmd.encode("hex"))
     output.o('wetland', 'exec command', cmd)
+    if 'wget' in cmd:
+        output.downandup(cmd)
+
+    filelen = 0
+    nowlen = 0
+    if re.match('^scp\s*(-r)?\s*-[t]\s*\S*$', cmd):
+        isscp = True
+    else:
+        isscp = False
 
     try:
         while True:
             if hacker_session.recv_ready():
                 text = hacker_session.recv(1024)
-                output.o('content', 'exec', '[H]:'+text.encode("hex"))
-                output.o('wetland', 'exec command', text)
+
+                if not isscp:
+                    output.o('content', 'exec', '[H]:'+text.encode("hex"))
+                    output.o('wetland', 'exec command', text)
+                else:
+                    if re.match('^C\d{4}\s+\d+\s+\S+\n$', text):
+                        filename = str(uuid.uuid1()).replace('-', '')
+                        filepath = os.path.join(cfg.get('files', 'path'),
+                                                filename)
+                        scpfile = open(filepath, 'wb')
+                        filelen = int(text.split(' ')[1])
+                    else:
+                        if nowlen >= filelen:
+                            pass
+                        else:
+                            scpfile.write(text)
+                            nowlen += len(text)
+                            if nowlen >= filelen:
+                                scpfile.close()
+                                nowlen = 0
+                                filelen = 0
+                                output.o('upfile', 'scp', filename)
+                                output.upfile(filename)
+
                 # print 'hacker said: ', text.encode("hex"), text
                 docker_session.sendall(text)
 

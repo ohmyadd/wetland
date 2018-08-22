@@ -1,7 +1,6 @@
 import os
-import re
-import time
-from wetland import config
+import uuid
+from wetland.config import cfg
 
 from paramiko import ServerInterface, SFTPServerInterface, SFTPServer, \
                      SFTPAttributes, SFTPHandle, SFTP_OK, AUTH_SUCCESSFUL,\
@@ -20,6 +19,8 @@ class remote_sftp_handle(SFTPHandle):
         self.remote_file.close()
         if self.save_file:
             self.save_file.close()
+            self.opt.o('upfile', 'sftp', self.file_name)
+            self.opt.upfile(self.file_name)
 
     def read(self, offset, length):
         self.opt.o("sftpfile", 'read', self.file_name)
@@ -76,7 +77,7 @@ class sftp_server (SFTPServerInterface):
         self.docker_client = ssh_server.docker_trans.open_sftp_client()
         self.root = self.docker_client.getcwd()
 
-        self.cfg = config.cfg
+        self.cfg = cfg
         self.opt = ssh_server.opt
         self.opt.o("sftpserver", 'init', 'success')
 
@@ -119,11 +120,12 @@ class sftp_server (SFTPServerInterface):
                 fstr = 'ab'
             else:
                 fstr = 'wb'
-            save_dir = self.cfg.get("files", "sftp")
-            file_name = [self.ssh_server.hacker_ip]
-            file_name.append(time.strftime('%Y%m%d%H%M%S'))
-            file_name.append(re.sub('[^A-Za-z0-0]', '-', path))
-            file_name = '_'.join(file_name)
+            save_dir = self.cfg.get("files", "path")
+            # file_name = [self.ssh_server.hacker_ip]
+            # file_name.append(time.strftime('%Y%m%d%H%M%S'))
+            # file_name.append(re.sub('[^A-Za-z0-0]', '-', path))
+            # file_name = '_'.join(file_name)
+            file_name = str(uuid.uuid1()).replace('-', '')
             save_path = os.path.join(save_dir, file_name)
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir)

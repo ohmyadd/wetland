@@ -1,3 +1,4 @@
+import threading
 import paramiko
 
 from wetland.services import SocketServer
@@ -14,6 +15,60 @@ class tcp_server(SocketServer.ThreadingTCPServer):
     def __init__(self, sock, handler):
         super(tcp_server, self).__init__(sock, handler)
         self.cfg = config.cfg
+
+        self.whitelist = None
+        if self.cfg.getboolean('wetland', 'whitelist') and \
+           self.cfg.getboolean('output', 'mqtt'):
+
+            self.whitelist = ['127.0.0.1']
+            import json
+            import paho.mqtt.client as mqtt
+
+            def on_connect(client, userdata, flags, rc):
+                client.subscribe("ck/whitelist")
+
+            def on_message(client, userdata, msg):
+                self.whitelist = json.loads(msg.payload)
+
+            host = config.cfg.get("mqtt", "host")
+            keys_path = config.cfg.get("mqtt", "keys_path")
+            ca_certs = keys_path + 'ca.crt'
+            cert_file = keys_path + 'client.crt'
+            key_file = keys_path + 'client.key'
+
+            self.mqttclient = mqtt.Client()
+            self.mqttclient.on_connect = on_connect
+            self.mqttclient.on_message = on_message
+            self.mqttclient.tls_set(ca_certs=ca_certs, certfile=cert_file,
+                                    keyfile=key_file)
+            self.mqttclient.connect(host)
+            thread = threading.Thread(target=lambda x: x.loop_forever(),
+                                      args=(self.mqttclient,))
+            thread.setDaemon(True)
+            thread.start()
+
+        if self.cfg.getboolean("wetland", "req_public_ip"):
+            import socket
+            import random
+
+            try:
+                # TODO: cip.cc is in china
+                socket.setdefaulttimeout(20)
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                s.bind((self.server.cfg.get('wetland', 'wetland_addr'),
+                        random.randint(40000, 60000)))
+                s.connect(('www.cip.cc', 80))
+                s.send("GET / HTTP/1.1\r\n"
+                       "Host:www.cip.cc\r\n"
+                       "User-Agent:curl\r\n\r\n")
+                self.myip = s.recv(1024).split("\r\n")[-4].split('\n')[0].split(': ')[1]
+                s.close()
+            except Exception, e:
+                print e
+                self.myip = None
+        else:
+            self.myip = None
 
 
 class tcp_handler(SocketServer.BaseRequestHandler):
@@ -32,29 +87,16 @@ class tcp_handler(SocketServer.BaseRequestHandler):
         transport.set_subsystem_handler('sftp', paramiko.SFTPServer,
                                         sftpServer.sftp_server)
         nw = network.network(self.client_address[0],
-                    self.server.cfg.get("wetland", "docker_addr"))
+                             self.server.cfg.get("wetland", "docker_addr"))
         nw.create()
 
-        if self.server.cfg.getboolean("wetland", "req_public_ip"):
-            import socket
-            import random
-
-            socket.setdefaulttimeout(2)
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((self.server.cfg.get('wetland', 'wetland_addr'),
-                    random.randint(40000, 60000)))
-            s.connect(('www.cip.cc', 80))
-            s.send("GET / HTTP/1.1\r\n"
-                   "Host:www.cip.cc\r\n"
-                   "User-Agent:curl\r\n\r\n")
-            myip = s.recv(1024).split("\r\n")[-4].split('\n')[0].split(': ')[1]
-            s.close()
+        if self.server.myip:
+            myip = self.server.myip
         else:
-            myip, _ = transport.sock.getsockname()
-
-        sServer = sshServer.ssh_server(transport=transport,
-                                       network=nw, myip=myip)
+            myip = transport.sock.getsockname()[0]
+        sServer = sshServer.ssh_server(transport=transport, network=nw,
+                                       myip=myip,
+                                       whitelist=self.server.whitelist)
 
         try:
             transport.start_server(server=sServer)

@@ -11,6 +11,8 @@ docker_port = 22
 # Name of this sensor, used when logging or outputing
 name = Wetland HoneyPot 1
 
+whitelist = false
+
 [ssh]
 # Generate wth `ssh-keygen -t rsa`
 private_rsa = data/id_rsa
@@ -25,7 +27,7 @@ banner = SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.2
 
 [files]
 # The folder to store the files uploaded by hackers.
-sftp = log/sftp
+path = files/
 
 [network]
 # Enable advanced network, wetland must has root permissions
@@ -43,7 +45,8 @@ mqtt = false
 
 [mqtt]
 # host = xxx
-# key_path = /etc/keys/
+# keys_path = /etc/keys/
+# upfiles = false
 
 [jsonlog]
 
