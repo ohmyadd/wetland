@@ -11,7 +11,7 @@ name = config.cfg.get("wetland", "name")
 
 # urls to report
 host = config.cfg.get("mqtt", "host")
-keys_path = config.cfg.get("mqtt", "key_path")
+keys_path = config.cfg.get("mqtt", "keys_path")
 ca_certs = keys_path + 'ca.crt'
 cert_file = keys_path + 'server.crt'
 key_file = keys_path + 'server.key'
