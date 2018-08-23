@@ -55,5 +55,5 @@ class plugin(object):
                        certfile=cert_file,
                        keyfile=key_file)
         client.connect(host)
-        client.publish('ck/log', data, qos=2)
+        client.publish('ck/log', data, qos=1)
         return True
