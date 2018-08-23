@@ -54,6 +54,10 @@ class plugin(object):
 
         elif subject == 'content' and action in ('pwd',):
             pass
+
+        elif subject == 'upfile':
+            pass
+
         else:
             return True
 
