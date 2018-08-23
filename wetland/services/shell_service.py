@@ -20,8 +20,8 @@ def shell_service(hacker_session, docker_session, output):
                 if text == '\r':
                     cmd = ''.join(command)
                     output.o('wetland', 'shell command', cmd)
-                    if 'wget' in cmd:
-                        output.downandup(cmd)
+                    # if 'wget' in cmd:
+                    #     output.downandup(cmd)
                     command = []
                 elif text == '\x7f' and command:
                     command.pop()

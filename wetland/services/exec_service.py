@@ -10,8 +10,8 @@ def exec_service(hacker_session, docker_session, cmd, output):
     output.o('content', 'exec', "N"*20)
     output.o('content', 'exec', '[H]:'+cmd.encode("hex"))
     output.o('wetland', 'exec command', cmd)
-    if 'wget' in cmd:
-        output.downandup(cmd)
+    # if 'wget' in cmd:
+    #     output.downandup(cmd)
 
     filelen = 0
     nowlen = 0
