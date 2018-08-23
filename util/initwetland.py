@@ -19,6 +19,11 @@ if not os.path.exists(path):
 os.chdir(path)
 
 
+# Save files
+if not os.path.exists('files'):
+    os.mkdir('files')
+
+
 # Generate keys
 print '[+] Checking: \tdata folder'
 if os.path.exists('data'):
