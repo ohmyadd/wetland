@@ -11,11 +11,14 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, network, myip, whitelist=None):
+    def __init__(self, transport, network, myip, haslogined,
+                 blacklist, whitelist):
         self.cfg = config.cfg
         self.network = network
         self.myip = myip
         self.whitelist = whitelist
+        self.blacklist = blacklist
+        self.haslogined = haslogined
 
         # init hacker's transport
         self.hacker_trans = transport
@@ -46,19 +49,49 @@ class ssh_server(paramiko.ServerInterface):
     def check_auth_password(self, username, password):
         self.opt.o('content', 'pwd', ":".join((username, password)))
 
-        if self.whitelist is not None and self.hacker_ip not in self.whitelist:
-            return paramiko.AUTH_FAILED
+        if self.whitelist is not None and not self.haslogined[0]:
+            if self.hacker_ip not in self.whitelist:
+                return paramiko.AUTH_FAILED
+            else:
+                self.docker_trans.auth_password(username='root', password='root')
+                s = self.docker_trans.open_session()
+                s.exec_command('useradd -m %s' % username)
+                s.close()
+                s = self.docker_trans.open_session()
+                s.exec_command('echo "%s:%s" | chpasswd' % (username, password))
+                self.haslogined[0] = True
+                self.opt.o('wetland', 'login_successful',
+                           ":".join((username, password)))
+                return paramiko.AUTH_SUCCESSFUL
+        elif self.haslogined[0]:
+            if self.hacker_ip in self.blacklist:
+                return paramiko.AUTH_FAILED
 
-        try:
-            # redirect all auth request to sshd container
-            self.docker_trans.auth_password(username=username,
-                                            password=password)
-        except Exception:
-            return paramiko.AUTH_FAILED
+            try:
+                # redirect all auth request to sshd container
+                self.docker_trans.auth_password(username=username,
+                                                password=password)
+            except Exception, e:
+                print e
+                self.blacklist.append(self.hacker_ip)
+                return paramiko.AUTH_FAILED
+            else:
+                self.opt.o('wetland', 'login_successful',
+                           ":".join((username, password)))
+                return paramiko.AUTH_SUCCESSFUL
+
         else:
-            self.opt.o('wetland', 'login_successful',
-                       ":".join((username, password)))
-            return paramiko.AUTH_SUCCESSFUL
+            try:
+                # redirect all auth request to sshd container
+                self.docker_trans.auth_password(username=username,
+                                                password=password)
+            except Exception, e:
+                print e
+                return paramiko.AUTH_FAILED
+            else:
+                self.opt.o('wetland', 'login_successful',
+                           ":".join((username, password)))
+                return paramiko.AUTH_SUCCESSFUL
 
     def check_auth_publickey(self, username, key):
         return paramiko.AUTH_FAILED
