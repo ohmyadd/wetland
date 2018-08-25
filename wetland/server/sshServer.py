@@ -53,16 +53,19 @@ class ssh_server(paramiko.ServerInterface):
             if self.hacker_ip not in self.whitelist:
                 return paramiko.AUTH_FAILED
             else:
-                self.docker_trans.auth_password(username='root', password='root')
+                self.docker_trans.auth_password(username='root',
+                                                password='wetlandrootwetland')
                 s = self.docker_trans.open_session()
                 s.exec_command('useradd -m %s' % username)
                 s.close()
                 s = self.docker_trans.open_session()
                 s.exec_command('echo "%s:%s" | chpasswd' % (username, password))
+                s.close()
                 self.haslogined[0] = True
                 self.opt.o('wetland', 'login_successful',
                            ":".join((username, password)))
                 return paramiko.AUTH_SUCCESSFUL
+
         elif self.haslogined[0]:
             if self.hacker_ip in self.blacklist:
                 return paramiko.AUTH_FAILED
@@ -137,7 +140,8 @@ class ssh_server(paramiko.ServerInterface):
             service_thread.setDaemon(True)
             service_thread.start()
 
-        except Exception:
+        except Exception, e:
+            print e
             self.opt.o('wetland', 'shell_request', "failed")
             return False
         else:

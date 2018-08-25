@@ -48,7 +48,7 @@ class plugin(object):
                 'content': content, 'sensor': self.name,
                 'src_port': self.server.hacker_port,
                 'dst_port': 22}
-        data = json.dumps(data) + '\n'
+        data = json.dumps(data)
 
         client = mqtt.Client()
         client.tls_set(ca_certs=ca_certs,
