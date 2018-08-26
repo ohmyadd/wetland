@@ -1,4 +1,5 @@
 import paramiko
+from collections import defaultdict
 
 from wetland.services import SocketServer
 from wetland.server import sshServer
@@ -15,9 +16,9 @@ class tcp_server(SocketServer.ThreadingTCPServer):
         super(tcp_server, self).__init__(sock, handler)
         self.cfg = config.cfg
 
-        self.haslogined = [False]
         self.whitelist = None
-        self.blacklist = ['127.0.0.2']
+        self.blacklist = defaultdict(lambda: 0)
+
         if self.cfg.getboolean('wetland', 'whitelist') and \
            self.cfg.getboolean('output', 'mqtt'):
 
@@ -44,10 +45,6 @@ class tcp_server(SocketServer.ThreadingTCPServer):
                                     keyfile=key_file)
             self.mqttclient.connect(host)
             self.mqttclient.loop_start()
-            # thread = threading.Thread(target=lambda x: x.loop_forever(),
-            #                          args=(self.mqttclient,))
-            # thread.setDaemon(True)
-            # thread.start()
 
         if self.cfg.getboolean("wetland", "req_public_ip"):
             import socket
@@ -99,8 +96,7 @@ class tcp_handler(SocketServer.BaseRequestHandler):
         sServer = sshServer.ssh_server(transport=transport, network=nw,
                                        myip=myip,
                                        whitelist=self.server.whitelist,
-                                       blacklist=self.server.blacklist,
-                                       haslogined=self.server.haslogined)
+                                       blacklist=self.server.blacklist)
 
         try:
             transport.start_server(server=sServer)

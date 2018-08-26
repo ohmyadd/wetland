@@ -11,14 +11,12 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, network, myip, haslogined,
-                 blacklist, whitelist):
+    def __init__(self, transport, network, myip, blacklist, whitelist):
         self.cfg = config.cfg
         self.network = network
         self.myip = myip
         self.whitelist = whitelist
         self.blacklist = blacklist
-        self.haslogined = haslogined
 
         # init hacker's transport
         self.hacker_trans = transport
@@ -49,7 +47,7 @@ class ssh_server(paramiko.ServerInterface):
     def check_auth_password(self, username, password):
         self.opt.o('content', 'pwd', ":".join((username, password)))
 
-        if self.whitelist is not None and not self.haslogined[0]:
+        if self.whitelist is not None and not self.blacklist[-1]:
             if self.hacker_ip not in self.whitelist:
                 return paramiko.AUTH_FAILED
             else:
@@ -61,27 +59,42 @@ class ssh_server(paramiko.ServerInterface):
                 s = self.docker_trans.open_session()
                 s.exec_command('echo "%s:%s" | chpasswd' % (username, password))
                 s.close()
-                self.haslogined[0] = True
+                self.blacklist[-1] = self.hacker_ip
                 self.opt.o('wetland', 'login_successful',
                            ":".join((username, password)))
                 return paramiko.AUTH_SUCCESSFUL
 
-        elif self.haslogined[0]:
-            if self.hacker_ip in self.blacklist:
+        elif self.blacklist[-1]:
+            print self.blacklist
+            if self.hacker_ip == self.blacklist[-1]:
+                try:
+                    # redirect all auth request to sshd container
+                    self.docker_trans.auth_password(username=username,
+                                                    password=password)
+                except Exception, e:
+                    print e
+                    return paramiko.AUTH_FAILED
+                else:
+                    self.opt.o('wetland', 'login_successful',
+                               ":".join((username, password)))
+                    return paramiko.AUTH_SUCCESSFUL
+
+            elif self.blacklist[self.hacker_ip] > 3:
                 return paramiko.AUTH_FAILED
 
-            try:
-                # redirect all auth request to sshd container
-                self.docker_trans.auth_password(username=username,
-                                                password=password)
-            except Exception, e:
-                print e
-                self.blacklist.append(self.hacker_ip)
-                return paramiko.AUTH_FAILED
             else:
-                self.opt.o('wetland', 'login_successful',
-                           ":".join((username, password)))
-                return paramiko.AUTH_SUCCESSFUL
+                try:
+                    # redirect all auth request to sshd container
+                    self.docker_trans.auth_password(username=username,
+                                                    password=password)
+                except Exception, e:
+                    print e
+                    self.blacklist[self.hacker_ip] += 1
+                    return paramiko.AUTH_FAILED
+                else:
+                    self.opt.o('wetland', 'login_successful',
+                               ":".join((username, password)))
+                    return paramiko.AUTH_SUCCESSFUL
 
         else:
             try:
