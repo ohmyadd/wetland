@@ -21,6 +21,11 @@ class plugin(object):
     def __init__(self, server):
         self.server = server
         self.name = config.cfg.get("wetland", "name")
+        self.client = mqtt.Client()
+        self.client.tls_set(ca_certs=ca_certs,
+                       certfile=cert_file,
+                       keyfile=key_file)
+        self.client.connect(host, keep_alive=65535)
 
     def send(self, subject, action, content):
         t = datetime.datetime.fromtimestamp(time.time(),
@@ -47,13 +52,8 @@ class plugin(object):
                 'dst_ip': self.server.myip, 'action': action,
                 'content': content, 'sensor': self.name,
                 'src_port': self.server.hacker_port,
-                'dst_port': 22}
+                'dst_port': 22, 'honeypot':'wetland'}
         data = json.dumps(data)
 
-        client = mqtt.Client()
-        client.tls_set(ca_certs=ca_certs,
-                       certfile=cert_file,
-                       keyfile=key_file)
-        client.connect(host)
-        client.publish('ck/log', data, qos=1)
+        self.client.publish('ck/log/wetland', data, qos=1)
         return True
