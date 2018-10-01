@@ -1,6 +1,4 @@
 import json
-import time
-import pytz
 import datetime
 from wetland import config
 import paho.mqtt.client as mqtt
@@ -8,6 +6,7 @@ import paho.mqtt.client as mqtt
 
 # sensor name
 name = config.cfg.get("wetland", "name")
+listenport = config.cfg.get("wetland", "wetland_port")
 
 # urls to report
 host = config.cfg.get("mqtt", "host")
@@ -29,12 +28,11 @@ class plugin(object):
         self.client.loop_start()
 
     def send(self, subject, action, content):
-        t = datetime.datetime.fromtimestamp(time.time(),
-                                            tz=pytz.timezone('UTC')).isoformat()
+        t = datetime.datetime.utcnow().isoformat()
 
         if subject == 'wetland' and \
            action in ('login_successful', 'shell command', 'exec command',
-                      'direct_request', 'reverse_request'):
+                      'direct_request', 'reverse_request', 'download'):
             pass
 
         elif subject in ('sftpfile', 'sftpserver'):
@@ -53,7 +51,7 @@ class plugin(object):
                 'dst_ip': self.server.myip, 'action': action,
                 'content': content, 'sensor': self.name,
                 'src_port': self.server.hacker_port,
-                'dst_port': 22, 'honeypot': 'wetland'}
+                'dst_port': listenport, 'honeypot': 'wetland'}
         data = json.dumps(data)
 
         self.client.publish('ck/log/wetland', data, qos=1)

@@ -20,8 +20,6 @@ def shell_service(hacker_session, docker_session, output):
                 if text == '\r':
                     cmd = ''.join(command)
                     output.o('wetland', 'shell command', cmd)
-                    # if 'wget' in cmd:
-                    #     output.downandup(cmd)
                     command = []
                 elif text == '\x7f' and command:
                     command.pop()
@@ -51,5 +49,10 @@ def shell_service(hacker_session, docker_session, output):
     except Exception, e:
         print e
     finally:
+        with open('/var/cache/.url', 'a') as txt:
+            urls = txt.read()
+            if urls:
+                output.o('wetland', 'download',
+                         [i for i in urls.split('\n') if i])
         hacker_session.close()
         docker_session.close()
