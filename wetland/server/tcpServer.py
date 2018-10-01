@@ -4,7 +4,6 @@ from collections import defaultdict
 from wetland.services import SocketServer
 from wetland.server import sshServer
 from wetland.server import sftpServer
-from wetland import network
 from wetland import config
 
 
@@ -85,16 +84,12 @@ class tcp_handler(SocketServer.BaseRequestHandler):
 
         transport.set_subsystem_handler('sftp', paramiko.SFTPServer,
                                         sftpServer.sftp_server)
-        nw = network.network(self.client_address[0],
-                             self.server.cfg.get("wetland", "docker_addr"))
-        nw.create()
 
         if self.server.myip:
             myip = self.server.myip
         else:
             myip = transport.sock.getsockname()[0]
-        sServer = sshServer.ssh_server(transport=transport, network=nw,
-                                       myip=myip,
+        sServer = sshServer.ssh_server(transport=transport, myip=myip,
                                        whitelist=self.server.whitelist,
                                        blacklist=self.server.blacklist)
 
@@ -104,7 +99,6 @@ class tcp_handler(SocketServer.BaseRequestHandler):
             return
         except Exception as e:
             print e
-            nw.delete()
             sServer.docker_trans.close()
             return
 
@@ -117,5 +111,4 @@ class tcp_handler(SocketServer.BaseRequestHandler):
         except Exception as e:
             print e
         finally:
-            nw.delete()
             sServer.docker_trans.close()

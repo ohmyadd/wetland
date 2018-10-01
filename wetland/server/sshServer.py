@@ -11,9 +11,8 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, network, myip, blacklist, whitelist):
+    def __init__(self, transport, myip, blacklist, whitelist):
         self.cfg = config.cfg
-        self.network = network
         self.myip = myip
         self.whitelist = whitelist
         self.blacklist = blacklist
@@ -29,8 +28,6 @@ class ssh_server(paramiko.ServerInterface):
 
         # bind docker' socket on fake ip
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if self.cfg.get("network", "enable").lower() == 'true':
-            sock.bind((str(self.network.fake_ip), self.hacker_port))
         sock.connect((self.docker_host, self.docker_port))
 
         # init docker's transport with socket
