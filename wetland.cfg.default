@@ -12,6 +12,7 @@ docker_port = 22
 name = Wetland HoneyPot 1
 
 whitelist = false
+blacklist = false
 
 [ssh]
 # Generate wth `ssh-keygen -t rsa`

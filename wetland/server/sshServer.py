@@ -64,7 +64,7 @@ class ssh_server(paramiko.ServerInterface):
                            ":".join((username, password)))
                 return paramiko.AUTH_SUCCESSFUL
 
-        elif self.blacklist[-1]:
+        elif self.cfg.getboolean('wetland', 'blacklist') and self.blacklist[-1]:
             print self.blacklist
             if self.hacker_ip == self.blacklist[-1]:
                 try:
@@ -94,6 +94,7 @@ class ssh_server(paramiko.ServerInterface):
                 else:
                     self.opt.o('wetland', 'login_successful',
                                ":".join((username, password)))
+                    self.blacklist[-1] = self.hacker_ip
                     return paramiko.AUTH_SUCCESSFUL
 
         else:

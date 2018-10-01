@@ -1,8 +1,6 @@
 import os
 import hashlib
-import requests
 import threading
-import subprocess
 from wetland.config import cfg
 from importlib import import_module as impt
 
