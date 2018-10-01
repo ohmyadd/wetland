@@ -57,3 +57,5 @@ def shell_service(hacker_session, docker_session, output):
             if urls:
                 output.o('wetland', 'download',
                          [i for i in urls.split('\n') if i])
+        if urls:
+            os.system('cat /dev/null > /var/cache/.url')
