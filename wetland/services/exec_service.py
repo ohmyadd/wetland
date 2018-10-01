@@ -73,10 +73,11 @@ def exec_service(hacker_session, docker_session, cmd, output):
     except Exception, e:
         print e
     finally:
-        with open('/var/cache/.url', 'a') as txt:
+        docker_session.close()
+        hacker_session.close()
+
+        with open('/var/cache/.url', 'a+') as txt:
             urls = txt.read()
             if urls:
                 output.o('wetland', 'download',
                          [i for i in urls.split('\n') if i])
-        docker_session.close()
-        hacker_session.close()
