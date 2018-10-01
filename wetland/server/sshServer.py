@@ -91,7 +91,6 @@ class ssh_server(paramiko.ServerInterface):
                 else:
                     self.opt.o('wetland', 'login_successful',
                                ":".join((username, password)))
-                    self.blacklist[-1] = self.hacker_ip
                     return paramiko.AUTH_SUCCESSFUL
 
         else:
@@ -105,6 +104,7 @@ class ssh_server(paramiko.ServerInterface):
             else:
                 self.opt.o('wetland', 'login_successful',
                            ":".join((username, password)))
+                self.blacklist[-1] = self.hacker_ip
                 return paramiko.AUTH_SUCCESSFUL
 
     def check_auth_publickey(self, username, key):
