@@ -15,17 +15,19 @@ ca_certs = keys_path + 'ca.crt'
 cert_file = keys_path + 'client.crt'
 key_file = keys_path + 'client.key'
 
+client = mqtt.Client()
+client.tls_set(ca_certs=ca_certs,
+               certfile=cert_file,
+               keyfile=key_file)
+client.connect(host)
+client.loop_start()
+
 
 class plugin(object):
     def __init__(self, server):
         self.server = server
         self.name = config.cfg.get("wetland", "name")
-        self.client = mqtt.Client()
-        self.client.tls_set(ca_certs=ca_certs,
-                            certfile=cert_file,
-                            keyfile=key_file)
-        self.client.connect(host)
-        self.client.loop_start()
+        self.client = client
 
     def send(self, subject, action, content):
         t = datetime.datetime.utcnow().isoformat()
@@ -44,6 +46,7 @@ class plugin(object):
         elif subject == 'upfile':
             pass
 
+        # do not log to server
         else:
             return True
 
