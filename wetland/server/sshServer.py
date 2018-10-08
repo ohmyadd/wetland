@@ -99,7 +99,6 @@ class ssh_server(paramiko.ServerInterface):
                 self.docker_trans.auth_password(username=username,
                                                 password=password)
             except Exception, e:
-                print e
                 return paramiko.AUTH_FAILED
             else:
                 self.opt.o('wetland', 'login_successful',

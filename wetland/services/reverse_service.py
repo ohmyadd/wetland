@@ -12,8 +12,8 @@ def reverse_handler2(docker_channel, origin, destination, hacker_trans,
                      output):
     try:
         hacker_channel = hacker_trans.open_forwarded_tcpip_channel(origin,
-                                                               destination)
-    except:
+                                                                   destination)
+    except Exception:
         docker_channel.close()
         return
 

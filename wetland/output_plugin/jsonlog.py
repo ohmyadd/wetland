@@ -1,6 +1,4 @@
 import json
-import time
-import pytz
 import datetime
 import socket
 from wetland import config
@@ -41,8 +39,7 @@ class plugin(object):
         s.close()
 
     def send(self, subject, action, content):
-        t = datetime.datetime.fromtimestamp(time.time(),
-                                            tz=pytz.timezone('UTC')).isoformat()
+        t = datetime.datetime.utcnow().isoformat()
 
         if subject == 'wetland' and \
            action in ('login_successful', 'shell command', 'exec command',
