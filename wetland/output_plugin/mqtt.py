@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 
 # sensor name
 name = config.cfg.get("wetland", "name")
-listenport = config.cfg.get("wetland", "wetland_port")
+listenport = config.cfg.getint("wetland", "wetland_port")
 
 # urls to report
 host = config.cfg.get("mqtt", "host")
