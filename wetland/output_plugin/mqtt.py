@@ -33,7 +33,7 @@ class plugin(object):
                 'content': content, 'sensor': args.sensor,
                 'src_port': self.server.hacker_port,
                 'dst_port': args.listenport, 'honeypot': 'wetland',
-                'session': self.server.session}
+                'session': self.server.sessionuid}
         data = json.dumps(data)
         args.mqttclient.publish('ck/log/wetland', data, qos=1)
         return True
