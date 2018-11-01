@@ -1,33 +1,11 @@
 import json
 import datetime
-from wetland import config
-import paho.mqtt.client as mqtt
-
-
-# sensor name
-name = config.cfg.get("wetland", "name")
-listenport = config.cfg.getint("wetland", "wetland_port")
-
-# urls to report
-host = config.cfg.get("mqtt", "host")
-keys_path = config.cfg.get("mqtt", "keys_path")
-ca_certs = keys_path + 'ca.crt'
-cert_file = keys_path + 'client.crt'
-key_file = keys_path + 'client.key'
-
-client = mqtt.Client()
-client.tls_set(ca_certs=ca_certs,
-               certfile=cert_file,
-               keyfile=key_file)
-client.connect(host)
-client.loop_start()
+from wetland.config import args
 
 
 class plugin(object):
     def __init__(self, server):
         self.server = server
-        self.name = config.cfg.get("wetland", "name")
-        self.client = client
 
     def send(self, subject, action, content):
         t = datetime.datetime.utcnow().isoformat()
@@ -51,11 +29,11 @@ class plugin(object):
             return True
 
         data = {'timestamp': t, 'src_ip': self.server.hacker_ip,
-                'dst_ip': self.server.myip, 'action': action,
-                'content': content, 'sensor': self.name,
+                'dst_ip': args.myip, 'action': action,
+                'content': content, 'sensor': args.sensor,
                 'src_port': self.server.hacker_port,
-                'dst_port': listenport, 'honeypot': 'wetland'}
+                'dst_port': args.listenport, 'honeypot': 'wetland',
+                'session': self.server.session}
         data = json.dumps(data)
-
-        self.client.publish('ck/log/wetland', data, qos=1)
+        args.mqttclient.publish('ck/log/wetland', data, qos=1)
         return True

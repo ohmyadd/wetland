@@ -1,10 +1,12 @@
+import json
+import uuid
 import paramiko
 from collections import defaultdict
 
 from wetland.services import SocketServer
 from wetland.server import sshServer
 from wetland.server import sftpServer
-from wetland import config
+from wetland.config import cfg, args
 
 
 class tcp_server(SocketServer.ThreadingTCPServer):
@@ -13,17 +15,16 @@ class tcp_server(SocketServer.ThreadingTCPServer):
 
     def __init__(self, sock, handler):
         super(tcp_server, self).__init__(sock, handler)
-        self.cfg = config.cfg
+        self.cfg = cfg
 
         self.whitelist = None
         self.blacklist = defaultdict(lambda: 0)
+        self.sessions = {}
 
         if self.cfg.getboolean('wetland', 'whitelist') and \
            self.cfg.getboolean('output', 'mqtt'):
 
             self.whitelist = ['127.0.0.1']
-            import json
-            import paho.mqtt.client as mqtt
 
             def on_connect(client, userdata, flags, rc):
                 client.subscribe("ck/whitelist")
@@ -31,42 +32,9 @@ class tcp_server(SocketServer.ThreadingTCPServer):
             def on_message(client, userdata, msg):
                 self.whitelist = json.loads(msg.payload)
 
-            host = config.cfg.get("mqtt", "host")
-            keys_path = config.cfg.get("mqtt", "keys_path")
-            ca_certs = keys_path + 'ca.crt'
-            cert_file = keys_path + 'client.crt'
-            key_file = keys_path + 'client.key'
-
-            self.mqttclient = mqtt.Client()
-            self.mqttclient.on_connect = on_connect
-            self.mqttclient.on_message = on_message
-            self.mqttclient.tls_set(ca_certs=ca_certs, certfile=cert_file,
-                                    keyfile=key_file)
-            self.mqttclient.connect(host)
-            self.mqttclient.loop_start()
-
-        if self.cfg.getboolean("wetland", "req_public_ip"):
-            import socket
-            import random
-
-            try:
-                # TODO: cip.cc is in china
-                socket.setdefaulttimeout(20)
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                s.bind((self.cfg.get('wetland', 'wetland_addr'),
-                        random.randint(40000, 60000)))
-                s.connect(('www.cip.cc', 80))
-                s.send("GET / HTTP/1.1\r\n"
-                       "Host:www.cip.cc\r\n"
-                       "User-Agent:curl\r\n\r\n")
-                self.myip = s.recv(1024).split("\r\n")[-4].split('\n')[0].split(': ')[1]
-                s.close()
-            except Exception, e:
-                print e
-                self.myip = None
-        else:
-            self.myip = None
+            args.mqttclient.subscribe("ck/whitelist")
+            args.mqttclient.on_connect = on_connect
+            args.mqttclient.on_message = on_message
 
 
 class tcp_handler(SocketServer.BaseRequestHandler):
@@ -85,13 +53,16 @@ class tcp_handler(SocketServer.BaseRequestHandler):
         transport.set_subsystem_handler('sftp', paramiko.SFTPServer,
                                         sftpServer.sftp_server)
 
-        if self.server.myip:
-            myip = self.server.myip
+        hacker_addr = transport.getpeername()[0]
+        if hacker_addr not in self.server.sessions:
+            uid = uuid.uuid4().get_hex()
+            self.server.sessions[hacker_addr] = uid
         else:
-            myip = transport.sock.getsockname()[0]
-        sServer = sshServer.ssh_server(transport=transport, myip=myip,
+            uid = self.server.sessions[hacker_addr]
+        sServer = sshServer.ssh_server(transport=transport,
                                        whitelist=self.server.whitelist,
-                                       blacklist=self.server.blacklist)
+                                       blacklist=self.server.blacklist,
+                                       sessionuid=uid)
 
         try:
             transport.start_server(server=sServer)

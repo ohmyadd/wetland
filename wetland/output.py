@@ -18,27 +18,6 @@ def get_plugins():
 pname = get_plugins()
 
 
-def upload(filename, content=None):
-    host = cfg.get("mqtt", "host")
-    keys_path = cfg.get("mqtt", "keys_path")
-    ca_certs = keys_path + 'ca.crt'
-    cert_file = keys_path + 'client.crt'
-    key_file = keys_path + 'client.key'
-
-    file_path = os.path.join(cfg.get('files', 'path'), filename)
-    if not content:
-        with open(file_path, 'rb') as bin:
-            content = bin.read()
-            filename = hashlib.sha256(content).hexdigest()
-
-    client = mqtt.Client()
-    client.tls_set(ca_certs=ca_certs,
-                   certfile=cert_file,
-                   keyfile=key_file)
-    client.connect(host)
-    client.publish('ck/file/' + filename, content.encode('base64'), qos=1)
-
-
 class output(object):
     def __init__(self, server):
         self.server = server
