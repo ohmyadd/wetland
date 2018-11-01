@@ -11,11 +11,11 @@ from wetland.output import output
 
 class ssh_server(paramiko.ServerInterface):
 
-    def __init__(self, transport, blacklist, whitelist, sessinuid):
+    def __init__(self, transport, blacklist, whitelist, sessionuid):
         self.cfg = config.cfg
         self.whitelist = whitelist
         self.blacklist = blacklist
-        self.sessinuid = sessinuid
+        self.sessionuid = sessionuid
 
         # init hacker's transport
         self.hacker_trans = transport
