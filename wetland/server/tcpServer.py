@@ -27,12 +27,12 @@ class tcp_server(SocketServer.ThreadingTCPServer):
             self.whitelist = ['127.0.0.1']
 
             def on_connect(client, userdata, flags, rc):
-                client.subscribe("ck/whitelist")
+                client.subscribe("ck/ctr/wetland/whitelist")
 
             def on_message(client, userdata, msg):
                 self.whitelist = json.loads(msg.payload)
 
-            args.mqttclient.subscribe("ck/whitelist")
+            args.mqttclient.subscribe("ck/ctr/wetland/whitelist")
             args.mqttclient.on_connect = on_connect
             args.mqttclient.on_message = on_message
 
