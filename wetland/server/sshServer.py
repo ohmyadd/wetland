@@ -68,30 +68,30 @@ class ssh_server(paramiko.ServerInterface):
                self.blacklist[self.hacker_ip] > 3:
                 return paramiko.AUTH_FAILED
 
-                try:
-                    # redirect all auth request to sshd container
-                    self.docker_trans.auth_password(username=username,
-                                                    password=password)
-                except Exception, e:
-                    self.blacklist[self.hacker_ip] += 1
-                    return paramiko.AUTH_FAILED
-                else:
-                    self.opt.o('wetland', 'login_successful',
-                               ":".join((username, password)))
-                    return paramiko.AUTH_SUCCESSFUL
+            try:
+                # redirect all auth request to sshd container
+                self.docker_trans.auth_password(username=username,
+                                                password=password)
+            except Exception:
+                self.blacklist[self.hacker_ip] += 1
+                return paramiko.AUTH_FAILED
+            else:
+                self.opt.o('wetland', 'login_successful',
+                           ":".join((username, password)))
+                return paramiko.AUTH_SUCCESSFUL
 
-                    self.blacklist[self.hacker_ip] += 1
+                self.blacklist[self.hacker_ip] += 1
 
-                    # redirect all auth request to sshd container
-                    self.docker_trans.auth_password(username=username,
-                                                    password=password)
+                # redirect all auth request to sshd container
+                self.docker_trans.auth_password(username=username,
+                                                password=password)
         else:
             self.opt.o('content', 'pwd', ":".join((username, password)))
             try:
                 # redirect all auth request to sshd container
                 self.docker_trans.auth_password(username=username,
                                                 password=password)
-            except Exception, e:
+            except Exception:
                 return paramiko.AUTH_FAILED
             else:
                 self.opt.o('wetland', 'login_successful',
