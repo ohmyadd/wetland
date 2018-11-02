@@ -31,6 +31,7 @@ class tcp_server(SocketServer.ThreadingTCPServer):
 
             def on_message(client, userdata, msg):
                 self.whitelist = json.loads(msg.payload)
+                print 'whitelist', self.whitelist
 
             args.mqttclient.subscribe("ck/ctr/wetland/whitelist")
             args.mqttclient.on_connect = on_connect
