@@ -43,9 +43,9 @@ class ssh_server(paramiko.ServerInterface):
 
     def check_auth_password(self, username, password):
 
+        self.opt.o('content', 'pwd', ":".join((username, password)))
         # whitelist mode and hacker havent come in
         if self.whitelist is not None and not self.blacklist[-1]:
-            self.opt.o('content', 'pwd', ":".join((username, password)))
             if self.hacker_ip not in self.whitelist:
                 return paramiko.AUTH_FAILED
             else:
@@ -86,7 +86,6 @@ class ssh_server(paramiko.ServerInterface):
                 self.docker_trans.auth_password(username=username,
                                                 password=password)
         else:
-            self.opt.o('content', 'pwd', ":".join((username, password)))
             try:
                 # redirect all auth request to sshd container
                 self.docker_trans.auth_password(username=username,
