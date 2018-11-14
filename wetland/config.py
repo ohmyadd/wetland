@@ -48,16 +48,19 @@ def get_args():
 
     # mqtt client
     if cfg.getboolean('output', 'mqtt'):
-        args.keys_path = cfg.get('mqtt', 'keys_path')
-        args.mqtthost = cfg.get('mqtt', 'host')
-        ca_certs = join(args.keys_path, 'ca.crt')
-        cert_file = join(args.keys_path, 'client.crt')
-        key_file = join(args.keys_path, 'client.key')
+        # args.keys_path = cfg.get('mqtt', 'keys_path')
+        # ca_certs = join(args.keys_path, 'ca.crt')
+        # cert_file = join(args.keys_path, 'client.crt')
+        # key_file = join(args.keys_path, 'client.key')
 
+        args.mqtthost = cfg.get('mqtt', 'host')
         mqttclient = mqtt.Client()
-        mqttclient.tls_set(ca_certs=ca_certs,
-                           certfile=cert_file,
-                           keyfile=key_file)
+        # mqttclient.tls_set(ca_certs=ca_certs,
+        #                    certfile=cert_file,
+        #                    keyfile=key_file)
+        mqttclient.username_pw_set(cfg.get('mqtt', 'usr'),
+                                   cfg.get('mqtt', 'pwd'))
+                        
         mqttclient.connect(args.mqtthost)
         mqttclient.loop_start()
 

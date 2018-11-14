@@ -46,8 +46,8 @@ mqtt = false
 
 [mqtt]
 # host = xxx
-# keys_path = /etc/keys/
-# upfiles = false
+# usr = root
+# pwd = pwd
 
 [jsonlog]
 

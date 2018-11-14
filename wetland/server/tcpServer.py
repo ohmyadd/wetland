@@ -30,7 +30,12 @@ class tcp_server(SocketServer.ThreadingTCPServer):
                 client.subscribe("ck/ctr/wetland/whitelist")
 
             def on_message(client, userdata, msg):
-                self.whitelist = json.loads(msg.payload)
+                newwhitelist = json.loads(msg.payload)
+                # runtime update the whitelist in sshserver
+                for _ in range(len(self.whitelist)):
+                    del self.whitelist[0]
+                for i in newwhitelist:
+                    self.whitelist.append(i)
                 print 'whitelist', self.whitelist
 
             args.mqttclient.subscribe("ck/ctr/wetland/whitelist")
