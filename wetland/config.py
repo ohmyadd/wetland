@@ -60,7 +60,7 @@ def get_args():
         #                    keyfile=key_file)
         mqttclient.username_pw_set(cfg.get('mqtt', 'usr'),
                                    cfg.get('mqtt', 'pwd'))
-                        
+
         mqttclient.connect(args.mqtthost)
         mqttclient.loop_start()
 
@@ -71,7 +71,7 @@ def get_args():
     else:
         _, args.myip = reqpubip()
     args.sensor = cfg.get('wetland', 'name')
-    args.listen_port = cfg.get('wetland', 'wetland_port')
+    args.listen_port = cfg.getint('wetland', 'wetland_port')
 
     return args
 
