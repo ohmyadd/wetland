@@ -61,7 +61,7 @@ def get_args():
         mqttclient.username_pw_set(cfg.get('mqtt', 'usr'),
                                    cfg.get('mqtt', 'pwd'))
 
-        mqttclient.connect(args.mqtthost)
+        mqttclient.connect_async(args.mqtthost)
         mqttclient.loop_start()
 
         args.mqttclient = mqttclient
