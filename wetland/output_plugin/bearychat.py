@@ -1,6 +1,7 @@
 import json
 import requests
 from wetland import config
+from wetland.config import args
 
 
 # sensor name
@@ -15,8 +16,8 @@ class plugin(object):
         self.server = server
 
     def send(self, subject, action, content):
-        if subject != 'wetland':
-            return False
+        #if subject != 'wetland':
+        #    return False
         if action in ['env_request', 'pty_request', 'global_request',
                       'channel_request']:
             return False
@@ -24,7 +25,7 @@ class plugin(object):
         text = []
         text.append('Sensor:\t%s' % name)
         text.append('Hacker:\t%s' % self.server.hacker_ip)
-        text.append('MyIP:\t%s' % self.server.myip)
+        text.append('MyIP:\t%s' % args.myip)
         text.append('Action:\t%s' % action)
         text.append('Content:\t%s' % content)
 
