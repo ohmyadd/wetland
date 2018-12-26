@@ -16,8 +16,8 @@ class plugin(object):
         self.server = server
 
     def send(self, subject, action, content):
-        #if subject != 'wetland':
-        #    return False
+        if subject != 'wetland':
+            return False
         if action in ['env_request', 'pty_request', 'global_request',
                       'channel_request']:
             return False
