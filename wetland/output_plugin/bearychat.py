@@ -16,7 +16,7 @@ class plugin(object):
         self.server = server
 
     def send(self, subject, action, content):
-        if subject != 'wetland':
+        if subject != 'wetland' and 'sftp' not in subject:
             return False
         if action in ['env_request', 'pty_request', 'global_request',
                       'channel_request']:
